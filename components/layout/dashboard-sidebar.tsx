@@ -5,9 +5,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-    Menu, X, LayoutDashboard, BookOpen, Settings, Terminal,
-    ChevronRight, ChevronLeft, Trophy, Briefcase,
-    Calendar, Mic, Microscope, Calculator, Network, FileText, Sparkles, LucideIcon
+    Menu, X, LayoutDashboard, BookOpen,
+    ChevronRight, ChevronLeft,
+    Calendar, Mic, Microscope, Calculator, Network, Sparkles, LucideIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NotificationHub } from "@/components/academy/notification-hub";
@@ -27,11 +27,6 @@ const sidebarItems: SidebarItem[] = [
     { name: "Field / Lab AI", href: "/academy/field-lab", icon: Microscope, badge: "Vision" },
     { name: "Exam Lab", href: "/academy/assessment", icon: Calculator },
     { name: "Skill Graph", href: "/academy/skills", icon: Network },
-    { name: "Research OS", href: "/research", icon: FileText },
-    { name: "Career Bridge", href: "/opportunities", icon: Briefcase },
-    { name: "Code Lab", href: "/academy/simulator", icon: Terminal },
-    { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
-    { name: "Settings", href: "/academy/settings", icon: Settings },
 ];
 
 interface DashboardSidebarProps {
@@ -120,7 +115,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
             {/* Sidebar Shell */}
             <aside
                 className={cn(
-                    "fixed top-0 bottom-0 left-0 z-50 flex flex-col border-r border-black/[0.08] dark:border-white/[0.06] bg-white/95 dark:bg-agri-dark/95 backdrop-blur-xl transition-all duration-300 ease-in-out md:static",
+                    "fixed top-0 bottom-0 left-0 z-50 flex flex-col border-r border-black/[0.08] dark:border-white/[0.06] bg-white/95 dark:bg-agri-dark/95 backdrop-blur-xl transition-all duration-300 ease-in-out md:static shrink-0",
                     isCollapsed ? "w-20" : "w-64",
                     isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
                 )}
@@ -202,7 +197,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
                     </nav>
 
                     {/* User Profile / Auth CTA */}
-                    <div className="border-t border-black/[0.08] dark:border-white/[0.06] p-3">
+                    <div className="border-t border-black/[0.08] dark:border-white/[0.06] p-3 mt-4">
                         {user ? (
                             <Link href="/academy/profile">
                                 <div className={cn(

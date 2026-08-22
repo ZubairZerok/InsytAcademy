@@ -8,7 +8,6 @@ import { LogOut, User, ChevronRight, Sparkles, GraduationCap, Mic } from "lucide
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { NotificationHub } from "@/components/academy/notification-hub";
 
 const navLinks = [
@@ -18,7 +17,7 @@ const navLinks = [
     { label: "AI Viva", href: "/academy/viva" },
     { label: "Field AI", href: "/academy/field-lab" },
     { label: "Exam Lab", href: "/academy/assessment" },
-    { label: "Research", href: "/research" },
+    { label: "Skill Graph", href: "/academy/skills" },
 ];
 
 interface DashboardTopbarProps {
@@ -60,61 +59,66 @@ export function DashboardTopbar({ user: userProp }: DashboardTopbarProps) {
             setStateUser(session?.user || null);
         };
         fetchUser();
-        const { data: listener } = supabase.auth.onAuthStateChange((_e, s) => setStateUser(s?.user || null));
-        return () => listener.subscription.unsubscribe();
     }, [supabase, userProp]);
 
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        router.push("/login");
-    };
-
-    // Find current page name for breadcrumb
-    const currentPage = navLinks.find(l => l.href === pathname || (l.href !== "/academy" && pathname.startsWith(l.href)));
-
-    // Resolve user data from props or client state
-    const displayUser = userProp || (stateUser ? {
-        email: stateUser.email,
-        full_name: stateUser.user_metadata?.full_name || undefined,
-        avatar_url: stateUser.user_metadata?.avatar_url || undefined
-    } : null);
+    const displayFullName = userProp?.full_name || (stateUser?.user_metadata?.full_name as string) || "";
+    const displayEmail = userProp?.email || stateUser?.email || "";
+    const displayAvatar = userProp?.avatar_url || (stateUser?.user_metadata?.avatar_url as string) || "";
+    const hasUser = Boolean(userProp || stateUser);
 
     const initials = (() => {
-        if (!displayUser) return "";
-        if (displayUser.full_name) {
-            const parts = displayUser.full_name.trim().split(/\s+/).filter(Boolean);
+        if (displayFullName) {
+            const parts = displayFullName.trim().split(/\s+/).filter(Boolean);
             if (parts.length > 0) return parts.map((n: string) => n[0]).join("").toUpperCase().slice(0, 2);
         }
-        if (displayUser.email) {
-            return displayUser.email[0].toUpperCase();
+        if (displayEmail) {
+            return displayEmail[0].toUpperCase();
         }
         return "";
     })();
 
-    return (
-        <div className="hidden md:flex h-14 items-center justify-between px-6 border-b border-black/[0.08] dark:border-white/[0.06] bg-white/95 dark:bg-agri-dark/80 backdrop-blur-xl sticky top-0 z-30">
-            {/* Left: Breadcrumb */}
-            <div className="flex items-center gap-2 text-xs font-mono text-gray-500 dark:text-gray-400">
-                <span className="font-bold text-gray-900 dark:text-white">INSYT.BAU</span>
-                {currentPage && (
-                    <>
-                        <ChevronRight className="h-3 w-3 text-gray-400" />
-                        <span className="text-emerald-700 dark:text-neon-green font-bold">{currentPage.label.toUpperCase()}</span>
-                    </>
-                )}
-            </div>
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        router.push("/login");
+        router.refresh();
+    };
 
-            {/* Center: Academic Cohort & AI Telemetry Badge */}
-            <div className="flex items-center gap-3">
-                <Link
-                    href="/onboarding"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-800 dark:text-neon-green hover:bg-emerald-500/20 transition-all cursor-pointer"
-                    title="Change BAU Faculty or Semester"
-                >
-                    <GraduationCap className="h-3.5 w-3.5" />
-                    <span>BAU · {activeFaculty} · {activeCohort}</span>
+    // Breadcrumb generator
+    const currentBreadcrumb = (() => {
+        if (pathname === "/academy") return "Command Center";
+        if (pathname.startsWith("/academy/courses")) return "Course Catalog & Syllabus";
+        if (pathname.startsWith("/academy/schedule")) return "Schedule & Routine Intelligence";
+        if (pathname.startsWith("/academy/viva")) return "Spoken AI Viva Room";
+        if (pathname.startsWith("/academy/field-lab")) return "Field & Specimen AI";
+        if (pathname.startsWith("/academy/assessment")) return "10/20/70 Ordinance Exam Lab";
+        if (pathname.startsWith("/academy/skills")) return "Prerequisite & Skill Graph";
+        if (pathname.startsWith("/academy/profile")) return "Student Profile";
+        return "Academic OS";
+    })();
+
+    return (
+        <header className="hidden md:flex h-16 items-center justify-between px-6 border-b border-black/[0.08] dark:border-white/[0.06] bg-white/95 dark:bg-agri-dark/95 backdrop-blur-xl sticky top-0 z-30">
+            {/* Left: Breadcrumbs & Active Institutional Cohort */}
+            <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 text-xs font-mono">
+                    <span className="font-bold text-gray-900 dark:text-white">INSYT.BAU</span>
+                    <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                    <span className="text-emerald-700 dark:text-neon-green font-semibold uppercase">{currentBreadcrumb}</span>
+                </div>
+
+                <div className="h-4 w-px bg-black/10 dark:bg-white/10" />
+
+                {/* Institutional Student Cohort Indicator */}
+                <Link href="/onboarding" className="group">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/5 hover:border-emerald-500/40 transition-all">
+                        <GraduationCap className="h-3.5 w-3.5 text-emerald-600 dark:text-neon-green group-hover:scale-110 transition-transform" />
+                        <span className="text-[11px] font-mono text-gray-700 dark:text-gray-300">
+                            BAU &middot; <strong className="text-gray-900 dark:text-white">{activeFaculty}</strong> &middot; {activeCohort}
+                        </span>
+                    </div>
                 </Link>
 
+                {/* Live Model Indicators */}
                 <div className="hidden lg:flex items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-mono text-blue-700 dark:text-blue-400">
                         <Sparkles className="h-3 w-3 text-blue-500" />
@@ -127,18 +131,17 @@ export function DashboardTopbar({ user: userProp }: DashboardTopbarProps) {
                 </div>
             </div>
 
-            {/* Right: theme toggle + auth actions */}
+            {/* Right: Auth actions */}
             <div className="flex items-center gap-2">
-                <ThemeToggle />
-                {displayUser ? (
+                {hasUser ? (
                     <>
                         <NotificationHub />
                         <Link href="/academy/profile">
-                            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-800 dark:text-neon-green cursor-pointer hover:bg-emerald-500/20 transition-all overflow-hidden" title={displayUser.full_name || displayUser.email || "Profile"}>
-                                {displayUser.avatar_url && !avatarError ? (
+                            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-800 dark:text-neon-green cursor-pointer hover:bg-emerald-500/20 transition-all overflow-hidden" title={displayFullName || displayEmail || "Profile"}>
+                                {displayAvatar && !avatarError ? (
                                     <img
-                                        src={displayUser.avatar_url}
-                                        alt={displayUser.full_name || "Profile"}
+                                        src={displayAvatar}
+                                        alt={displayFullName || "Profile"}
                                         className="h-full w-full object-cover"
                                         onError={() => setAvatarError(true)}
                                     />
@@ -172,6 +175,6 @@ export function DashboardTopbar({ user: userProp }: DashboardTopbarProps) {
                     </div>
                 )}
             </div>
-        </div>
+        </header>
     );
 }

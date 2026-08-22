@@ -1,3 +1,4 @@
+// app/(dashboard)/layout.tsx
 import { createClient } from "@/lib/supabase/server";
 import { DashboardSidebar } from "@/components/layout/dashboard-sidebar";
 import { DashboardTopbar } from "@/components/layout/dashboard-topbar";
@@ -30,14 +31,14 @@ export default async function DashboardLayout({
     }
 
     return (
-        <div className="flex min-h-screen bg-agri-black text-white">
+        <div className="flex min-h-screen bg-white dark:bg-agri-black text-gray-900 dark:text-white">
             <DashboardSidebar user={userData} />
 
-            {/* Main Content */}
-            <main className="dashboard-main flex-1 pt-14 md:pl-64 md:pt-0 min-w-0 transition-all duration-300">
+            {/* Main Content Area without duplicate left padding */}
+            <main className="dashboard-main flex-1 min-w-0 flex flex-col pt-14 md:pt-0 transition-all duration-300">
                 {/* Top navigation bar — rendered on desktop */}
                 <DashboardTopbar user={userData} />
-                <div className="p-4 md:p-8">{children}</div>
+                <div className="p-4 md:p-8 flex-1">{children}</div>
             </main>
         </div>
     );

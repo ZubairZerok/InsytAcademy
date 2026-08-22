@@ -61,24 +61,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="light" suppressHydrationWarning>
       <head>
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
           crossOrigin="anonymous"
         />
-        {/* Apply the saved/preferred theme BEFORE paint to avoid a flash of the
-            wrong theme (FOUC) and the hydration mismatch it caused. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('insyt-theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.classList.add(t);}catch(e){document.documentElement.classList.add('dark');}})();`,
-          }}
-        />
       </head>
       <body
         className={cn(
-          "min-h-screen bg-agri-black font-sans antialiased",
+          "min-h-screen bg-slate-50 text-slate-900 font-sans antialiased",
           GeistSans.variable,
           GeistMono.variable
         )}
