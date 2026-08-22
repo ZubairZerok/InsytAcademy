@@ -2,26 +2,307 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 130 18% 3%;
+    --foreground: 0 0% 95%;
+    --card: 150 15% 6%;
+    --card-foreground: 0 0% 95%;
+    --popover: 150 15% 6%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 155 100% 50%;
+    --primary-foreground: 150 18% 3%;
+    --secondary: 150 12% 12%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 150 10% 15%;
+    --muted-foreground: 150 5% 50%;
+    --accent: 150 12% 12%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 95%;
+    --border: 150 10% 15%;
+    --input: 150 10% 15%;
+    --ring: 155 100% 50%;
+    --radius: 0.75rem;
+
+    /* Obsidian palette variables — dark mode defaults */
+    --agri-black: #070A08;
+    --agri-dark: #0D1410;
+    --agri-deep: #111916;
+    --cyber-gray: #1A2420;
+    --cyber-gray-light: #5A7A6C;
+    --surface-glass: rgba(13, 20, 16, 0.7);
+    --neon-green: #00FF94;
+    --neon-green-dim: #00CC76;
+    --neon-green-muted: #00994F;
+    --text-primary: #ffffff;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --border-primary: rgba(255, 255, 255, 0.08);
+    --search-bg: #000000;
+    --search-text: #ffffff;
+    --search-border: rgba(255, 255, 255, 0.15);
+    --search-placeholder: rgba(255, 255, 255, 0.4);
+    --new-post-btn-text: #000000;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     LIGHT MODE — High Contrast Professional Palette (WCAG AAA)
+     ═══════════════════════════════════════════════════════ */
+  html.light {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 155 100% 30%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 155 100% 30%;
+
+    --agri-black: #F8FAFC;
+    --agri-dark: #FFFFFF;
+    --agri-deep: #F1F5F9;
+    --cyber-gray: #E2E8F0;
+    --cyber-gray-light: #475569;
+    --surface-glass: rgba(255, 255, 255, 0.95);
+
+    /* Light Mode Accent — Deep Emerald Green for 100% legibility on white */
+    --neon-green: #059669;
+    --neon-green-dim: #047857;
+    --neon-green-muted: #065F46;
+
+    --text-primary: #0F172A;
+    --text-secondary: #334155;
+    --text-muted: #64748B;
+    --border-primary: rgba(15, 23, 42, 0.1);
+    --search-bg: #FFFFFF;
+    --search-text: #0F172A;
+    --search-border: #E2E8F0;
+    --search-placeholder: #94A3B8;
+    --new-post-btn-text: #FFFFFF;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background-color: var(--agri-black);
+    color: var(--text-primary);
+    @apply antialiased relative min-h-screen overflow-x-hidden;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Vibrant Mesh Glow Background Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(0, 255, 148, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 85% 25%, rgba(59, 130, 246, 0.08) 0%, transparent 45%),
+      radial-gradient(circle at 50% 75%, rgba(139, 92, 246, 0.07) 0%, transparent 50%),
+      radial-gradient(circle at 80% 85%, rgba(249, 115, 22, 0.06) 0%, transparent 40%);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Vibrant Gradient Text Utilities */
+.gradient-text-emerald {
+  background: linear-gradient(135deg, #00FF94 0%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-cyber {
+  background: linear-gradient(135deg, #00FF94 0%, #3B82F6 50%, #8B5CF6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-fire {
+  background: linear-gradient(135deg, #F97316 0%, #EC4899 50%, #EAB308 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-border-glow {
+  position: relative;
+}
+.gradient-border-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 255, 148, 0.4), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LIGHT MODE OVERRIDES — Ultra High Contrast & Visual Depth
+   ═══════════════════════════════════════════════════════ */
+
+html.light body {
+  background-color: #F8FAFC;
+  color: #0F172A;
+}
+
+html.light .glass {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02) !important;
+}
+
+html.light aside {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* Text overrides in Light Mode for hardcoded dark classes */
+html.light .text-white:not(button *):not(.bg-neon-green *):not(.bg-emerald-600 *):not(.bg-black *):not(code *) {
+  color: #0F172A !important;
+}
+
+html.light .text-gray-400 {
+  color: #475569 !important;
+}
+
+html.light .text-gray-300 {
+  color: #334155 !important;
+}
+
+html.light .text-gray-500 {
+  color: #64748B !important;
+}
+
+/* Structural Backgrounds in Light Mode */
+html.light [class*="bg-agri-dark"],
+html.light [class*="bg-agri-deep"] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light [class*="bg-agri-black"] {
+  background-color: #F8FAFC !important;
+}
+
+/* Borders in Light Mode */
+html.light [class*="border-cyber-gray"],
+html.light [class*="border-white/"],
+html.light [class*="border-white\\["] {
+  border-color: #E2E8F0 !important;
+}
+
+/* Sub-panels & Inputs in Light Mode */
+html.light .bg-white\/5,
+html.light .bg-white\/10,
+html.light .bg-white\/\[0\.02\],
+html.light .bg-white\/\[0\.04\],
+html.light .bg-white\/\[0\.06\] {
+  background-color: #F1F5F9 !important;
+}
+
+html.light .bg-black\/40,
+html.light .bg-black\/50,
+html.light .bg-black\/60 {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* Badges & Accents in Light Mode */
+html.light .bg-neon-green\/10 {
+  background-color: rgba(5, 150, 105, 0.12) !important;
+}
+
+html.light .bg-neon-green\/20 {
+  background-color: rgba(5, 150, 105, 0.2) !important;
+}
+
+html.light .border-neon-green\/30,
+html.light .border-neon-green\/50,
+html.light .border-neon-green\/20 {
+  border-color: rgba(5, 150, 105, 0.4) !important;
+}
+
+/* Code & Pre Blocks in Light Mode */
+html.light pre {
+  background-color: #0F172A !important;
+  color: #F8FAFC !important;
+  border: 1px solid #334155 !important;
+}
+
+html.light code:not(pre code) {
+  background-color: #F1F5F9 !important;
+  color: #047857 !important;
+  border: 1px solid #CBD5E1 !important;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+}
+
+html.light ::selection {
+  background: rgba(5, 150, 105, 0.2);
+  color: #0F172A;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.4);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE ADAPTIVE LAYOUT — Sidebar Collapse Support
+   ═══════════════════════════════════════════════════════ */
+@media (min-width: 768px) {
+  main.dashboard-main {
+    transition: padding-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html.sidebar-collapsed main.dashboard-main {
+    padding-left: 5rem !important; /* 80px w-20 when sidebar collapsed */
+  }
+}
+
+
+/* ── Accessibility: respect reduced-motion (WCAG 2.3.3) ───────────────────
+   Disables non-essential animation/transitions and infinite loops for users
+   who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-spin,
+  .animate-ping,
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
   }
 }

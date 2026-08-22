@@ -34,3 +34,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local dev scratch / dumps — never commit (may contain DB dumps or secrets)
+/scratch/
+/brain/
+/files/
+dump_profiles.js
+project_context.txt
+problem_prompt.txt
+lint.txt
+test-db*.js
+fix_*.js
+
