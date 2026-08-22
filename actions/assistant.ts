@@ -20,13 +20,18 @@ export async function askAssistant(
     code: string,
     language: "r" | "python"
 ): Promise<{ text?: string; error?: string }> {
-    // 1. Auth — no anonymous access (closes the denial-of-wallet hole).
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { error: "Please sign in to use the assistant." };
+    // 1. Auth / Guest Identifier
+    let userId = "guest-student";
+    try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) userId = user.id;
+    } catch {
+        // Fallback for open access
+    }
 
-    // 2. Rate limit per user.
-    const rl = checkRateLimit(`assistant:${user.id}`, 20, 60_000);
+    // 2. Rate limit per user / session
+    const rl = checkRateLimit(`assistant:${userId}`, 30, 60_000);
     if (!rl.allowed) {
         return { error: `Too many requests. Try again in ${rl.retryAfterSeconds}s.` };
     }

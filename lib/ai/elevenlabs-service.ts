@@ -8,10 +8,17 @@ export interface ElevenLabsVoiceOptions {
     similarityBoost?: number;
 }
 
+function getElevenLabsApiKey(): string | null {
+    const raw = process.env.ELEVENLABS_API_KEY || process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY;
+    if (!raw) return null;
+    const clean = raw.trim();
+    if (clean === "" || clean.includes("your_") || clean.includes("placeholder")) return null;
+    return clean;
+}
+
 export class ElevenLabsService {
-    private static apiKey: string | null = process.env.ELEVENLABS_API_KEY || null;
-    // Default academic faculty examiner voice: "Brian" or "George" (authoritative, clear)
-    private static defaultVoiceId: string = "nPczCjzI2devNBz1zQrb"; 
+    // Default academic faculty examiner voice: "Rachel" (21m00Tcm4TlvDq8ikWAM) or "Brian" (nPczCjzI2devNBz1zQrb)
+    private static defaultVoiceId: string = "21m00Tcm4TlvDq8ikWAM"; 
 
     /**
      * Synthesizes audio stream from text using ElevenLabs REST TTS API.
@@ -20,7 +27,7 @@ export class ElevenLabsService {
         text: string,
         options?: ElevenLabsVoiceOptions
     ): Promise<{ audioBuffer?: ArrayBuffer; error?: string }> {
-        const apiKey = this.apiKey || process.env.ELEVENLABS_API_KEY;
+        const apiKey = getElevenLabsApiKey();
         if (!apiKey) {
             return { error: "ELEVENLABS_API_KEY is not configured." };
         }

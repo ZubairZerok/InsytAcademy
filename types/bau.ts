@@ -144,7 +144,7 @@ export interface PDFRoutineParseResult {
     confidenceScore: number;
     rawTextSnippet?: string;
     rawNoticeText?: string;
-    provenance: "GEMINI_PARSED" | "DEMO_FALLBACK" | "GEMINI_1_5_FLASH" | "BAU_OFFICIAL_CATALOG";
+    provenance: "GEMINI_PARSED" | "DEMO_FALLBACK" | "GEMINI_1_5_FLASH" | "BAU_OFFICIAL_CATALOG" | "OPENROUTER_GPT4O_MINI" | string;
 }
 
 // AI Viva Voce Types
@@ -234,7 +234,7 @@ export interface SpecimenAnalysisResult {
     educationalDiagnosis: string;
     labExerciseGuidance: string;
     safetyDisclaimer: string;
-    provenance: "GEMINI_VISION" | "DEMO_FALLBACK" | "BAU_OFFICIAL_CATALOG";
+    provenance: "GEMINI_VISION" | "DEMO_FALLBACK" | "BAU_OFFICIAL_CATALOG" | "OPENROUTER_VISION" | string;
 }
 
 // BAU 10/20/70 Assessment & CGPA Types
