@@ -196,52 +196,37 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
                         })}
                     </nav>
 
-                    {/* User Profile / Auth CTA */}
+                    {/* Active Student Profile Badge */}
                     <div className="border-t border-black/[0.08] dark:border-white/[0.06] p-3 mt-4">
-                        {user ? (
-                            <Link href="/academy/profile">
-                                <div className={cn(
-                                    "flex items-center gap-3 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.04] dark:border-white/5 hover:border-neon-green/30 transition-all cursor-pointer",
-                                    isCollapsed && "justify-center p-1"
-                                )}>
-                                    <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-800 dark:text-neon-green shrink-0 overflow-hidden">
-                                        {user.avatar_url && !avatarError ? (
-                                            <img
-                                                src={user.avatar_url}
-                                                alt={user.full_name || "Profile"}
-                                                className="h-full w-full object-cover"
-                                                onError={() => setAvatarError(true)}
-                                            />
-                                        ) : (
-                                            initials
-                                        )}
-                                    </div>
-                                    {!isCollapsed && (
-                                        <div className="flex-1 overflow-hidden">
-                                            <div className="text-xs font-bold text-gray-900 dark:text-white truncate font-sans">
-                                                {user.full_name || "Student"}
-                                            </div>
-                                            <div className="text-[10px] text-gray-600 dark:text-gray-400 truncate font-mono">
-                                                {user.email}
-                                            </div>
-                                        </div>
+                        <Link href="/academy/profile">
+                            <div className={cn(
+                                "flex items-center gap-3 p-2 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.04] dark:border-white/5 hover:border-emerald-500/30 transition-all cursor-pointer",
+                                isCollapsed && "justify-center p-1"
+                            )}>
+                                <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-800 dark:text-neon-green shrink-0 overflow-hidden">
+                                    {user?.avatar_url && !avatarError ? (
+                                        <img
+                                            src={user.avatar_url}
+                                            alt={user.full_name || "Hasan Zubair"}
+                                            className="h-full w-full object-cover"
+                                            onError={() => setAvatarError(true)}
+                                        />
+                                    ) : (
+                                        initials || "HZ"
                                     )}
                                 </div>
-                            </Link>
-                        ) : (
-                            <div className={cn("space-y-2", isCollapsed && "hidden")}>
-                                <Link href="/login" className="block">
-                                    <button className="w-full py-2 px-3 rounded-lg border border-black/10 dark:border-white/10 font-mono text-xs text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all">
-                                        LOG IN
-                                    </button>
-                                </Link>
-                                <Link href="/signup" className="block">
-                                    <button className="w-full py-2 px-3 rounded-lg bg-neon-green text-black font-mono text-xs font-bold hover:bg-neon-green/90 shadow-[0_0_12px_rgba(0,255,148,0.25)] transition-all">
-                                        ENTER OS
-                                    </button>
-                                </Link>
+                                {!isCollapsed && (
+                                    <div className="flex-1 overflow-hidden">
+                                        <div className="text-xs font-bold text-gray-900 dark:text-white truncate font-sans">
+                                            {user?.full_name || "Hasan Zubair"}
+                                        </div>
+                                        <div className="text-[10px] text-gray-600 dark:text-gray-400 truncate font-mono">
+                                            {user?.email || "student@bau.edu.bd"}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        </Link>
                     </div>
                 </div>
             </aside>

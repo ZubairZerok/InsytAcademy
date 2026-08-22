@@ -131,49 +131,23 @@ export function DashboardTopbar({ user: userProp }: DashboardTopbarProps) {
                 </div>
             </div>
 
-            {/* Right: Auth actions */}
+            {/* Right: Profile & Notifications */}
             <div className="flex items-center gap-2">
-                {hasUser ? (
-                    <>
-                        <NotificationHub />
-                        <Link href="/academy/profile">
-                            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-800 dark:text-neon-green cursor-pointer hover:bg-emerald-500/20 transition-all overflow-hidden" title={displayFullName || displayEmail || "Profile"}>
-                                {displayAvatar && !avatarError ? (
-                                    <img
-                                        src={displayAvatar}
-                                        alt={displayFullName || "Profile"}
-                                        className="h-full w-full object-cover"
-                                        onError={() => setAvatarError(true)}
-                                    />
-                                ) : (
-                                    initials || <User className="h-4 w-4" />
-                                )}
-                            </div>
-                        </Link>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={handleLogout}
-                            className="text-gray-400 hover:text-red-400 rounded-lg h-8 w-8"
-                            title="Log Out"
-                        >
-                            <LogOut className="h-4 w-4" />
-                        </Button>
-                    </>
-                ) : (
-                    <div className="flex items-center gap-2">
-                        <Link href="/login">
-                            <Button variant="ghost" className="text-xs font-mono font-bold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white rounded-lg h-8 px-3">
-                                LOG IN
-                            </Button>
-                        </Link>
-                        <Link href="/signup">
-                            <Button className="text-xs font-mono font-bold bg-neon-green text-black hover:bg-neon-green/90 rounded-lg h-8 px-4 shadow-[0_0_12px_rgba(0,255,148,0.3)]">
-                                ENTER OS
-                            </Button>
-                        </Link>
+                <NotificationHub />
+                <Link href="/academy/profile">
+                    <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-800 dark:text-neon-green cursor-pointer hover:bg-emerald-500/20 transition-all overflow-hidden" title={displayFullName || "Hasan Zubair"}>
+                        {displayAvatar && !avatarError ? (
+                            <img
+                                src={displayAvatar}
+                                alt={displayFullName || "Profile"}
+                                className="h-full w-full object-cover"
+                                onError={() => setAvatarError(true)}
+                            />
+                        ) : (
+                            initials || "HZ"
+                        )}
                     </div>
-                )}
+                </Link>
             </div>
         </header>
     );

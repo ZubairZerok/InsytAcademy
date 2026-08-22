@@ -8,35 +8,40 @@ export default async function DashboardLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const supabase = createClient();
+    let userData = {
+        email: "student@bau.edu.bd",
+        full_name: "Hasan Zubair",
+        avatar_url: "",
+    };
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
 
-    let userData = null;
+        if (user) {
+            const { data: profile } = await supabase
+                .from("profiles")
+                .select("*")
+                .eq("id", user.id)
+                .single();
 
-    if (user) {
-        const { data: profile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", user.id)
-            .single();
-
-        userData = {
-            email: user.email,
-            full_name: profile?.full_name || user.user_metadata?.full_name,
-            avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url,
-        };
+            userData = {
+                email: user.email || "student@bau.edu.bd",
+                full_name: profile?.full_name || user.user_metadata?.full_name || "Hasan Zubair",
+                avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || "",
+            };
+        }
+    } catch {
+        // Safe fallback for open mode
     }
 
     return (
-        <div className="flex min-h-screen bg-white dark:bg-agri-black text-gray-900 dark:text-white">
+        <div className="flex min-h-screen bg-slate-50 text-slate-900">
             <DashboardSidebar user={userData} />
 
-            {/* Main Content Area without duplicate left padding */}
+            {/* Main Content Area */}
             <main className="dashboard-main flex-1 min-w-0 flex flex-col pt-14 md:pt-0 transition-all duration-300">
-                {/* Top navigation bar — rendered on desktop */}
+                {/* Top navigation bar */}
                 <DashboardTopbar user={userData} />
                 <div className="p-4 md:p-8 flex-1">{children}</div>
             </main>

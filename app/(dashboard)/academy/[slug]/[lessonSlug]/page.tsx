@@ -18,11 +18,6 @@ interface LessonPageProps {
 }
 
 export default async function LessonPage({ params }: LessonPageProps) {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-        redirect(`/login?next=${encodeURIComponent(`/academy/${params.slug}/${params.lessonSlug}`)}`);
-    }
 
     const lessonData = await getLesson(params.slug, params.lessonSlug);
 
