@@ -97,8 +97,10 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
                             </div>
                         </Link>
                     ) : (
-                        <Link href="/login">
-                            <span className="text-xs font-mono font-bold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">LOG IN</span>
+                        <Link href="/academy/profile">
+                            <div className="h-7 w-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-800 dark:text-neon-green">
+                                HZ
+                            </div>
                         </Link>
                     )}
                 </div>

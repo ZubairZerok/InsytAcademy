@@ -133,70 +133,30 @@ export function SiteHeader() {
                             </Button>
                         </>
                     ) : (
-                        <>
-                            <Link href="/login">
-                                <Button variant="ghost" className="text-sm font-normal text-gray-400 hover:text-white rounded-lg">
-                                    Log In
-                                </Button>
-                            </Link>
-                            <Link href="/signup">
-                                <Button className="text-sm font-bold bg-neon-green text-agri-black hover:bg-neon-green/90 rounded-lg h-9 px-5 transition-all">
-                                    Start Learning
-                                </Button>
-                            </Link>
-                        </>
+                        <Link href="/academy">
+                            <Button className="text-sm font-bold bg-neon-green text-black hover:bg-neon-green/90 rounded-xl h-9 px-5 shadow-[0_0_15px_rgba(0,255,148,0.25)] transition-all">
+                                ENTER ACADEMIC OS
+                            </Button>
+                        </Link>
                     )}
                 </div>
             </div>
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div className="md:hidden border-t border-white/[0.06] bg-agri-dark/95 backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="md:hidden border-t border-black/[0.08] dark:border-white/[0.06] bg-white/95 dark:bg-agri-dark/95 backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="p-4 space-y-3">
-                        {pathname !== "/" && (
-                            <form onSubmit={handleSearch}>
-                                <div className="relative w-full">
-                                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                                    <Input
-                                        type="search"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder="Search..."
-                                        className="w-full rounded-xl border-white/[0.06] bg-white/[0.03] pl-10 pr-4 h-10 text-white placeholder-gray-600"
-                                    />
-                                </div>
-                            </form>
-                        )}
                         <div className="space-y-1 pt-2">
-                            <Link href="/academy/courses" className="block px-3 py-2.5 rounded-lg text-sm text-gray-300 hover:bg-white/[0.04]" onClick={() => setIsOpen(false)}>Courses</Link>
-                            <Link href="/research" className="block px-3 py-2.5 rounded-lg text-sm text-gray-300 hover:bg-white/[0.04]" onClick={() => setIsOpen(false)}>Research</Link>
+                            <Link href="/academy/courses" className="block px-3 py-2.5 rounded-lg text-sm font-mono text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/[0.04]" onClick={() => setIsOpen(false)}>Courses</Link>
+                            <Link href="/academy/viva" className="block px-3 py-2.5 rounded-lg text-sm font-mono text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/[0.04]" onClick={() => setIsOpen(false)}>AI Viva Room</Link>
+                            <Link href="/academy/schedule" className="block px-3 py-2.5 rounded-lg text-sm font-mono text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/[0.04]" onClick={() => setIsOpen(false)}>BAU Schedule</Link>
                         </div>
-                        <div className="border-t border-white/[0.06] pt-3 space-y-2">
-                            {user ? (
-                                <>
-                                    <Link href="/academy" className="block">
-                                        <Button className="w-full bg-neon-green text-agri-black font-bold rounded-lg" onClick={() => setIsOpen(false)}>
-                                            My Dashboard
-                                        </Button>
-                                    </Link>
-                                    <Button variant="outline" className="w-full border-white/10 text-gray-400 rounded-lg" onClick={handleLogout}>
-                                        Log Out
-                                    </Button>
-                                </>
-                            ) : (
-                                <>
-                                    <Link href="/signup" className="block">
-                                        <Button className="w-full bg-neon-green text-agri-black font-bold rounded-lg">
-                                            Start Learning
-                                        </Button>
-                                    </Link>
-                                    <Link href="/login" className="block">
-                                        <Button variant="outline" className="w-full border-white/10 text-gray-400 rounded-lg">
-                                            Log In
-                                        </Button>
-                                    </Link>
-                                </>
-                            )}
+                        <div className="border-t border-black/[0.08] dark:border-white/[0.06] pt-3">
+                            <Link href="/academy" className="block">
+                                <Button className="w-full bg-neon-green text-black font-mono font-bold rounded-lg" onClick={() => setIsOpen(false)}>
+                                    ENTER ACADEMIC OS
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
