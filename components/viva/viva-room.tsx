@@ -93,6 +93,8 @@ export function VivaRoom({ courseCode, questions }: VivaRoomProps) {
         }
     }, [fallbackBrowserSpeech]);
 
+    const [micError, setMicError] = useState<string | null>(null);
+
     // Initialize Web Speech Recognition if available in browser
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -101,37 +103,53 @@ export function VivaRoom({ courseCode, questions }: VivaRoomProps) {
                 continuous: boolean;
                 interimResults: boolean;
                 lang: string;
-                onresult: (e: { results: Array<{ 0: { transcript: string } }> }) => void;
-                onerror: (e: unknown) => void;
+                onresult: (e: { resultIndex: number; results: Array<{ isFinal: boolean; 0: { transcript: string } }> }) => void;
+                onerror: (e: { error: string }) => void;
                 onend: () => void;
                 start: () => void;
                 stop: () => void;
             } } | undefined;
 
             if (SpeechRecognitionClass) {
-                const rec = new SpeechRecognitionClass();
-                rec.continuous = true;
-                rec.interimResults = true;
-                rec.lang = "en-US";
+                try {
+                    const rec = new SpeechRecognitionClass();
+                    rec.continuous = true;
+                    rec.interimResults = true;
+                    rec.lang = "en-US";
 
-                rec.onresult = (event) => {
-                    let fullText = "";
-                    for (let i = 0; i < event.results.length; i++) {
-                        fullText += event.results[i][0].transcript + " ";
-                    }
-                    setSpokenTranscript(fullText.trim());
-                };
+                    rec.onresult = (event) => {
+                        let fullText = "";
+                        for (let i = 0; i < event.results.length; i++) {
+                            const part = event.results[i][0]?.transcript || "";
+                            fullText += part + " ";
+                        }
+                        const clean = fullText.trim();
+                        if (clean) {
+                            setSpokenTranscript(clean);
+                            setMicError(null);
+                        }
+                    };
 
-                rec.onerror = (e) => {
-                    console.warn("[SpeechRecognition] Error:", e);
-                    setIsListening(false);
-                };
+                    rec.onerror = (e) => {
+                        console.warn("[SpeechRecognition] Error:", e?.error);
+                        if (e?.error === "not-allowed") {
+                            setMicError("Microphone permission denied. Please allow mic access in your browser address bar.");
+                            setIsListening(false);
+                        } else if (e?.error === "no-speech") {
+                            // Don't kill listening on brief silence
+                        } else {
+                            setIsListening(false);
+                        }
+                    };
 
-                rec.onend = () => {
-                    setIsListening(false);
-                };
+                    rec.onend = () => {
+                        setIsListening(false);
+                    };
 
-                recognitionRef.current = rec;
+                    recognitionRef.current = rec;
+                } catch (err) {
+                    console.warn("[SpeechRecognition Init Error]", err);
+                }
             }
         }
     }, []);
@@ -141,27 +159,54 @@ export function VivaRoom({ courseCode, questions }: VivaRoomProps) {
         if (currentQuestion && !isCompleted) {
             setSpokenTranscript("");
             setLastTurnFeedback(null);
+            setMicError(null);
             speakText(currentQuestion.questionText);
         }
     }, [currentIndex, currentQuestion, isCompleted, speakText]);
 
-    const toggleListening = () => {
+    const toggleListening = async () => {
+        setMicError(null);
         const rec = recognitionRef.current as { start: () => void; stop: () => void } | null;
-        if (!rec) {
-            alert("Speech recognition is not supported in this browser. You can also type or use demo responses.");
+
+        if (isListening) {
+            if (rec) {
+                try { rec.stop(); } catch {}
+            }
+            setIsListening(false);
             return;
         }
 
-        if (isListening) {
-            rec.stop();
-            setIsListening(false);
-        } else {
-            setSpokenTranscript("");
+        // Request browser microphone hardware permission
+        if (typeof navigator !== "undefined" && navigator.mediaDevices?.getUserMedia) {
             try {
-                rec.start();
-                setIsListening(true);
+                await navigator.mediaDevices.getUserMedia({ audio: true });
             } catch (err) {
-                console.warn(err);
+                console.warn("[Microphone Permission Error]", err);
+                setMicError("Microphone access blocked. Please click the lock icon in your address bar to enable mic, or type/paste your answer below.");
+                return;
+            }
+        }
+
+        if (!rec) {
+            setMicError("Speech recognition is not supported in this browser. You can type your answer or click 'Use Ideal Answer' below.");
+            return;
+        }
+
+        try {
+            setSpokenTranscript("");
+            rec.start();
+            setIsListening(true);
+        } catch (err) {
+            console.warn("[Speech Start Error]", err);
+            try {
+                // If already active, stop and restart
+                rec.stop();
+                setTimeout(() => {
+                    rec.start();
+                    setIsListening(true);
+                }, 200);
+            } catch {
+                setIsListening(false);
             }
         }
     };
@@ -298,16 +343,49 @@ export function VivaRoom({ courseCode, questions }: VivaRoomProps) {
                     )}
                 </div>
 
+                {/* Error / Permission Alert */}
+                {micError && (
+                    <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs font-mono text-amber-800 dark:text-amber-300 leading-relaxed">
+                        ⚠️ {micError}
+                    </div>
+                )}
+
                 {/* Live Spoken Transcription Display */}
                 <div className="relative">
                     <textarea
                         value={spokenTranscript}
                         onChange={(e) => setSpokenTranscript(e.target.value)}
-                        placeholder="Click 'START SPEAKING' and answer verbally, or click 'USE IDEAL DEMO ANSWER'..."
+                        placeholder="Click 'START SPEAKING' and answer verbally, or click any key phrase chip below to formulate your response..."
                         rows={4}
                         className="w-full rounded-xl bg-black/[0.03] dark:bg-black/50 border border-black/10 dark:border-white/10 p-4 text-sm font-sans text-gray-900 dark:text-white focus:outline-none focus:border-emerald-500 leading-relaxed resize-none"
                     />
                 </div>
+
+                {/* Topic Key Points Chips */}
+                {currentQuestion.expectedKeyPoints && currentQuestion.expectedKeyPoints.length > 0 && (
+                    <div className="space-y-1.5 pt-1">
+                        <span className="text-[10px] font-mono text-gray-500 uppercase tracking-wider block">
+                            Quick-Insert Key Concepts:
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                            {currentQuestion.expectedKeyPoints.map((point, pIdx) => (
+                                <button
+                                    key={pIdx}
+                                    type="button"
+                                    onClick={() => {
+                                        setSpokenTranscript((prev) => {
+                                            const trimmed = prev.trim();
+                                            return trimmed ? `${trimmed} ${point}.` : `${point}.`;
+                                        });
+                                    }}
+                                    className="px-2.5 py-1 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/10 hover:border-emerald-500/40 text-[11px] font-mono text-gray-700 dark:text-gray-300 hover:text-emerald-700 dark:hover:text-neon-green transition-all text-left"
+                                >
+                                    + {point}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* Control Actions */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
