@@ -1,7 +1,8 @@
+// components/gamification/streak-hud.tsx
 "use client";
 
 import { GlassCard } from "@/components/ui/glass-card";
-import { Flame, Shield, Trophy, Zap } from "lucide-react";
+import { Flame, Shield, Trophy } from "lucide-react";
 
 interface StreakHudProps {
     streakCount: number;
@@ -63,7 +64,7 @@ export function StreakHud({ streakCount, longestStreak, streakFreezes }: StreakH
                         <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
                             <div
                                 className="h-full bg-gradient-to-r from-orange-500 to-amber-400 transition-all duration-500"
-                                style={{ width: `${progressPercentToNext(streakCount, nextMilestone)}%` }}
+                                style={{ width: `${progressToNext}%` }}
                             />
                         </div>
                     </div>
@@ -71,8 +72,4 @@ export function StreakHud({ streakCount, longestStreak, streakFreezes }: StreakH
             </div>
         </GlassCard>
     );
-}
-
-function progressPercentToNext(current: number, next: number): number {
-    return Math.min(100, Math.round((current / next) * 100));
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Opportunity } from "@/types/opportunity";
 import { applyForOpportunity } from "@/actions/opportunities";
 import { Button } from "@/components/ui/button";
-import { X, Briefcase, MapPin, DollarSign, Award, CheckCircle, AlertTriangle, Send, Loader2, Link2 } from "lucide-react";
+import { X, MapPin, DollarSign, Award, CheckCircle, AlertTriangle, Send, Loader2, Link2 } from "lucide-react";
 
 interface OpportunityModalProps {
     opportunity: Opportunity | null;

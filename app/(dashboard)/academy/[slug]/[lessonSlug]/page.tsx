@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { LessonCompleteButton } from "@/components/academy/complete-button";
 import { QuizPlayer } from "@/components/academy/quiz-player";
 import { LessonContent } from "@/components/academy/lesson-content";
-import { ChevronLeft, ChevronRight, Lock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Lock, CheckCircle } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
 

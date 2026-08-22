@@ -13,7 +13,7 @@ interface ArenaSolverModalProps {
         title: string;
         slug: string;
         description: string;
-        difficulty: string;
+        difficulty: string | number;
         tags: string[];
         hints: string[];
         xp_reward: number;

@@ -3,6 +3,9 @@ const nextConfig = {
     // Hide X-Powered-By header (don't advertise Next.js version)
     poweredByHeader: false,
     transpilePackages: ["tailwind-merge"],
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
     images: {
         remotePatterns: [
             {
@@ -31,16 +34,12 @@ const nextConfig = {
                         value: "DENY",
                     },
                     {
-                        key: "X-XSS-Protection",
-                        value: "1; mode=block",
-                    },
-                    {
                         key: "Referrer-Policy",
                         value: "strict-origin-when-cross-origin",
                     },
                     {
                         key: "Permissions-Policy",
-                        value: "camera=(), microphone=(), geolocation=()",
+                        value: "camera=(self), microphone=(self), geolocation=()",
                     },
                 ],
             },

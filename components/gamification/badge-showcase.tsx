@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { GlassCard } from "@/components/ui/glass-card";
-import { Award, Lock, Sparkles, CheckCircle2 } from "lucide-react";
+import { Award, Lock, CheckCircle2 } from "lucide-react";
 import type { UserBadgeDisplay } from "@/types/gamification";
 
 interface BadgeShowcaseProps {

@@ -96,11 +96,11 @@ export default async function ArenaPage() {
                                             <div className="space-y-1">
                                                 <div className="flex items-center gap-2">
                                                     <span className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded ${
-                                                        prob.difficulty === 'easy' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
-                                                        prob.difficulty === 'medium' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+                                                        prob.difficulty === 1 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                                                        prob.difficulty === 2 ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
                                                         'bg-red-500/20 text-red-400 border border-red-500/30'
                                                     }`}>
-                                                        {prob.difficulty}
+                                                        {prob.difficulty === 1 ? 'EASY' : prob.difficulty === 2 ? 'MEDIUM' : 'HARD'}
                                                     </span>
 
                                                     {isSolved && (
@@ -139,7 +139,7 @@ export default async function ArenaPage() {
                                         <ArenaSolverModal
                                             problem={prob}
                                             userSubmission={prob.user_submission}
-                                            attemptsLeft={prob.attempts_left_today}
+                                            attemptsLeft={prob.attempts_left_today ?? 3}
                                         />
                                     </div>
                                 </GlassCard>
