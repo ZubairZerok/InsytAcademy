@@ -49,11 +49,18 @@ export function VivaRoom({ courseCode, questions }: VivaRoomProps) {
         }
     }, []);
 
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
     // Speak question out loud via ElevenLabs API or Web Speech API fallback
     const speakText = useCallback(async (text: string) => {
         setIsSpeaking(true);
 
         try {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current = null;
+            }
+
             const res = await fetch("/api/viva/voice", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -61,14 +68,22 @@ export function VivaRoom({ courseCode, questions }: VivaRoomProps) {
             });
 
             if (res.ok) {
-                const contentType = res.headers.get("Content-Type") || "";
-                if (contentType.includes("audio/mpeg")) {
-                    const blob = await res.blob();
+                const blob = await res.blob();
+                if (blob && blob.size > 500) {
                     const audioUrl = URL.createObjectURL(blob);
                     const audio = new Audio(audioUrl);
-                    audio.onended = () => setIsSpeaking(false);
-                    audio.onerror = () => fallbackBrowserSpeech(text);
-                    await audio.play();
+                    audioRef.current = audio;
+                    audio.onended = () => {
+                        setIsSpeaking(false);
+                        URL.revokeObjectURL(audioUrl);
+                    };
+                    audio.onerror = () => {
+                        setIsSpeaking(false);
+                        fallbackBrowserSpeech(text);
+                    };
+                    await audio.play().catch(() => {
+                        fallbackBrowserSpeech(text);
+                    });
                     return;
                 }
             }
@@ -254,17 +269,16 @@ export function VivaRoom({ courseCode, questions }: VivaRoomProps) {
                     </p>
                 </div>
 
-                {/* Voice Re-play Button */}
-                <div className="flex items-center justify-center gap-2">
+                {/* Prominent ElevenLabs Voice Controls */}
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
                     <Button
-                        variant="ghost"
                         size="sm"
                         onClick={() => speakText(currentQuestion.questionText)}
                         disabled={isSpeaking}
-                        className="text-xs font-mono text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                        className="bg-purple-600 hover:bg-purple-500 text-white font-mono text-xs font-bold rounded-xl px-4 py-2 shadow-[0_0_18px_rgba(168,85,247,0.35)] transition-all flex items-center gap-2"
                     >
-                        <Volume2 className="h-3.5 w-3.5 mr-1.5" />
-                        {isSpeaking ? "Speaking Question..." : "Replay Audio Question"}
+                        <Volume2 className={`h-4 w-4 ${isSpeaking ? "animate-pulse" : ""}`} />
+                        {isSpeaking ? "🔊 Speaking via ElevenLabs..." : "🔊 Play Question (ElevenLabs Voice)"}
                     </Button>
                 </div>
             </GlassCard>

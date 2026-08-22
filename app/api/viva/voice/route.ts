@@ -17,19 +17,20 @@ export async function POST(req: NextRequest) {
         const result = await ElevenLabsService.synthesizeSpeechStream(text, { voiceId });
 
         if (result.audioBuffer) {
-            return new NextResponse(result.audioBuffer, {
+            const buffer = Buffer.from(result.audioBuffer);
+            return new NextResponse(buffer, {
                 status: 200,
                 headers: {
                     "Content-Type": "audio/mpeg",
+                    "Content-Length": String(buffer.byteLength),
                     "Cache-Control": "public, max-age=86400, stale-while-revalidate=43200",
                 }
             });
         }
 
-        // If ElevenLabs key is not set or failed, return fallback signal so client uses Web Speech API
         return NextResponse.json({
             fallback: true,
-            message: "ElevenLabs key not active. Use browser speech synthesis fallback.",
+            message: "ElevenLabs fallback active",
             text
         }, { status: 200 });
 
