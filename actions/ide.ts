@@ -1,5 +1,7 @@
 "use server";
 
+import { safeEvalMath } from "@/lib/safe-math";
+
 export type ExecutionResult = {
     output: string[];
     error?: string;
@@ -27,10 +29,10 @@ export async function executeCode(code: string, language: "r" | "python"): Promi
             executionTime: end - start
         };
 
-    } catch (err: any) {
+    } catch (err: unknown) {
         return {
             output: [],
-            error: err.message || "Runtime Error",
+            error: err instanceof Error ? err.message : "Runtime Error",
             executionTime: Date.now() - start
         };
     }
@@ -71,8 +73,7 @@ function simulateR(code: string): string[] {
         // Math (Basic)
         if (/^[\d\s\+\-\*\/\(\)\.]+$/.test(clean)) {
             try {
-                // eslint-disable-next-line no-new-func
-                const res = new Function(`return ${clean}`)();
+                const res = safeEvalMath(clean);
                 output.push(`[1] ${res}`);
             } catch (e) {
                 output.push(`Error: ${e}`);
@@ -114,8 +115,7 @@ function simulatePython(code: string): string[] {
             } else {
                 // Math inside print
                 try {
-                    // eslint-disable-next-line no-new-func
-                    const res = new Function(`return ${content}`)();
+                    const res = safeEvalMath(content);
                     output.push(String(res));
                 } catch (e) {
                     output.push(`NameError: name '${content}' is not defined`);

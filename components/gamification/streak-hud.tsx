@@ -1,7 +1,7 @@
 "use client";
 
 import { GlassCard } from "@/components/ui/glass-card";
-import { Flame, Shield, Trophy, Zap } from "lucide-react";
+import { Flame, Shield, Trophy } from "lucide-react";
 
 interface StreakHudProps {
     streakCount: number;
@@ -11,7 +11,6 @@ interface StreakHudProps {
 
 export function StreakHud({ streakCount, longestStreak, streakFreezes }: StreakHudProps) {
     const nextMilestone = [3, 7, 14, 30, 60, 100].find(m => m > streakCount) || 100;
-    const progressToNext = Math.min(100, Math.round((streakCount / nextMilestone) * 100));
 
     return (
         <GlassCard className="p-6 border-orange-500/20 bg-gradient-to-r from-orange-500/[0.03] to-transparent">

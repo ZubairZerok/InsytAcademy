@@ -56,10 +56,13 @@ export default async function UserProfilePage({ params }: Props) {
         .map(e => e.courses)
         .filter((c): c is NonNullable<typeof c> => c !== null);
 
-    const xp = profile.xp || 0;
-    const level = profile.level || 1;
-    const role = profile.role || "Cadet";
-    const fullName = profile.full_name || "Agent";
+    const { count: completedLessonsCount } = await supabase
+        .from("user_progress")
+        .select("id", { count: 'exact', head: true })
+        .eq("user_id", params.id);
+
+    const role = profile.role || "Scholar";
+    const fullName = profile.full_name || "Researcher";
 
     return (
         <div className="space-y-8 max-w-5xl mx-auto pb-20">
@@ -78,7 +81,7 @@ export default async function UserProfilePage({ params }: Props) {
                     </div>
                     
                     <h3 className="text-xl font-bold mb-1 font-mono tracking-tight w-full overflow-hidden text-ellipsis whitespace-nowrap px-2" style={{color: 'var(--text-primary)'}}>{fullName}</h3>
-                    <p className="text-xs text-gray-400 font-mono mb-4 w-full truncate px-2">Level {level} Operator</p>
+                    <p className="text-xs text-gray-400 font-mono mb-4 w-full truncate px-2">Researcher & Analyst</p>
                     
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neon-green/10 border border-neon-green/20 text-emerald-700 dark:text-neon-green text-xs font-mono font-bold uppercase tracking-wider mb-6">
                         <Shield className="h-3 w-3" />
@@ -87,8 +90,8 @@ export default async function UserProfilePage({ params }: Props) {
 
                     <div className="w-full grid grid-cols-2 gap-4 border-t border-white/5 pt-6">
                         <div className="text-center">
-                            <span className="text-[10px] text-gray-400 font-mono block">TOTAL XP</span>
-                            <span className="text-lg font-bold text-neon-green font-mono">{xp.toLocaleString()}</span>
+                            <span className="text-[10px] text-gray-400 font-mono block">COMPLETED</span>
+                            <span className="text-lg font-bold text-neon-green font-mono">{completedLessonsCount || 0}</span>
                         </div>
                         <div className="text-center border-l border-white/5">
                             <span className="text-[10px] text-gray-400 font-mono block">COURSES</span>

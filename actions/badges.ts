@@ -31,7 +31,11 @@ export async function getUserBadges(): Promise<UserBadgeDisplay[]> {
         unlockedMap.set(ub.badge_id, ub.unlocked_at);
     });
 
-    return catalog.map((b: Badge) => ({
+    const filteredCatalog = catalog.filter(
+        (b: Badge) => b.category !== "streak" && b.category !== "xp" && !b.id.startsWith("streak_") && !b.id.startsWith("xp_")
+    );
+
+    return filteredCatalog.map((b: Badge) => ({
         ...b,
         unlocked: unlockedMap.has(b.id),
         unlocked_at: unlockedMap.get(b.id) || undefined,

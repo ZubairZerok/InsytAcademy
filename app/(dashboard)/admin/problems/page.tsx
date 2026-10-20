@@ -1,6 +1,6 @@
 import { SectionHeading } from "@/components/ui/section-heading";
 import { GlassCard } from "@/components/ui/glass-card";
-import { Swords, Plus, Eye, EyeOff, Sparkles, CheckCircle2 } from "lucide-react";
+import { Swords, Eye, EyeOff, Sparkles, CheckCircle2 } from "lucide-react";
 import { getAdminProblems, togglePublishProblem } from "@/actions/admin-problems";
 import { requireAdmin } from "@/lib/auth/assert-role";
 import Link from "next/link";
@@ -73,7 +73,7 @@ export default async function AdminProblemsPage() {
                                     <th className="p-4">Title</th>
                                     <th className="p-4">Difficulty</th>
                                     <th className="p-4">Tags</th>
-                                    <th className="p-4">Reward</th>
+                                    <th className="p-4">Verification</th>
                                     <th className="p-4">Status</th>
                                     <th className="p-4 text-right">Actions</th>
                                 </tr>
@@ -103,8 +103,8 @@ export default async function AdminProblemsPage() {
                                                 ))}
                                             </div>
                                         </td>
-                                        <td className="p-4 font-mono font-bold text-neon-green">
-                                            +{prob.xp_reward || 150} XP
+                                        <td className="p-4 font-mono text-xs text-gray-400">
+                                            Auto-Graded
                                         </td>
                                         <td className="p-4">
                                             <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded ${

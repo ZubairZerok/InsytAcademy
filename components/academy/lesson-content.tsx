@@ -16,7 +16,7 @@ export function LessonContent({ content }: LessonContentProps) {
     const parts = content.split(codeBlockRegex);
 
     return (
-        <div className="space-y-6 text-gray-300 leading-relaxed font-sans text-base">
+        <div className="space-y-6 text-gray-300 leading-relaxed font-bangla text-base">
             {parts.map((part, index) => {
                 if (part.startsWith("```")) {
                     return <CodeBlockContainer key={index} codeBlock={part} />;
@@ -49,6 +49,7 @@ function CodeBlockContainer({ codeBlock }: { codeBlock: string }) {
         python: "PYTHON SCRIPT",
         json: "JSON DATA",
         sql: "POSTGRES SQL",
+        qgis: "QGIS EXPRESSION",
     };
 
     return (
@@ -99,13 +100,14 @@ function CodeBlockContainer({ codeBlock }: { codeBlock: string }) {
 }
 
 // ---------------------------------------------------------------------------
-// Markdown Paragraphs, Headers, Lists & Callouts Parser
+// Markdown Paragraphs, Headers, Lists, Tables & Callouts Parser
 // ---------------------------------------------------------------------------
 function MarkdownBlock({ text }: { text: string }) {
     const lines = text.split("\n");
     const elements: React.ReactNode[] = [];
     let calloutLines: string[] = [];
     let calloutType: "NOTE" | "TIP" | "WARNING" | "IMPORTANT" | "QUOTE" | null = null;
+    let tableLines: string[] = [];
 
     const flushCallout = () => {
         if (calloutLines.length > 0 && calloutType) {
@@ -121,8 +123,69 @@ function MarkdownBlock({ text }: { text: string }) {
         }
     };
 
+    const flushTable = () => {
+        if (tableLines.length >= 2) {
+            const rawHeader = tableLines[0].trim();
+            const headerCells = rawHeader.split("|").slice(1, -1).map(c => c.trim());
+            
+            let dataLines = tableLines.slice(1);
+            // check if first data line is markdown divider (| --- | --- |)
+            if (dataLines.length > 0 && /^[|\s-:]+$/.test(dataLines[0].trim())) {
+                dataLines = dataLines.slice(1);
+            }
+
+            const rows = dataLines.map(line => 
+                line.split("|").slice(1, -1).map(c => c.trim())
+            );
+
+            elements.push(
+                <div key={`table-${elements.length}`} className="overflow-x-auto rounded-xl border border-white/10 my-6 shadow-2xl bg-black/40 backdrop-blur-md">
+                    <table className="w-full text-left text-sm font-bangla border-collapse">
+                        <thead>
+                            <tr className="bg-white/[0.04] border-b border-white/10">
+                                {headerCells.map((h, i) => (
+                                    <th key={i} className="px-4 py-3 font-mono text-xs font-bold text-neon-green tracking-wider uppercase">
+                                        {renderInlineFormattedText(h)}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                            {rows.map((row, ri) => (
+                                <tr key={ri} className="hover:bg-white/[0.02] transition-colors">
+                                    {row.map((cell, ci) => (
+                                        <td key={ci} className="px-4 py-3 text-gray-300 align-top">
+                                            {renderInlineFormattedText(cell)}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+            tableLines = [];
+        } else if (tableLines.length === 1) {
+            elements.push(
+                <p key={`p-tbl-${elements.length}`} className="my-3 leading-relaxed text-gray-300 font-bangla">
+                    {renderInlineFormattedText(tableLines[0])}
+                </p>
+            );
+            tableLines = [];
+        }
+    };
+
     lines.forEach((line, idx) => {
         const trimmed = line.trim();
+
+        // 0. Check for Markdown Table Row
+        if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
+            flushCallout();
+            tableLines.push(trimmed);
+            return;
+        } else {
+            flushTable();
+        }
 
         // 1. Detect Callout Blockquotes
         if (trimmed.startsWith(">")) {
@@ -161,7 +224,7 @@ function MarkdownBlock({ text }: { text: string }) {
         // 3. Headers
         if (trimmed.startsWith("# ")) {
             elements.push(
-                <h1 key={idx} className="text-3xl md:text-4xl font-bold text-white mt-10 mb-4 tracking-tight border-b border-white/10 pb-3">
+                <h1 key={idx} className="text-3xl md:text-4xl font-bold text-white mt-10 mb-4 tracking-tight border-b border-white/10 pb-3 font-bangla">
                     {renderInlineFormattedText(trimmed.replace("# ", ""))}
                 </h1>
             );
@@ -169,7 +232,7 @@ function MarkdownBlock({ text }: { text: string }) {
         }
         if (trimmed.startsWith("## ")) {
             elements.push(
-                <h2 key={idx} className="text-xl md:text-2xl font-bold text-neon-green font-mono mt-8 mb-3 flex items-center gap-2">
+                <h2 key={idx} className="text-xl md:text-2xl font-bold text-neon-green font-mono mt-8 mb-3 flex items-center gap-2 font-bangla">
                     <Sparkles className="h-4 w-4 text-neon-green shrink-0 animate-pulse" />
                     {renderInlineFormattedText(trimmed.replace("## ", ""))}
                 </h2>
@@ -178,7 +241,7 @@ function MarkdownBlock({ text }: { text: string }) {
         }
         if (trimmed.startsWith("### ")) {
             elements.push(
-                <h3 key={idx} className="text-lg md:text-xl font-bold text-white mt-6 mb-2">
+                <h3 key={idx} className="text-lg md:text-xl font-bold text-white mt-6 mb-2 font-bangla">
                     {renderInlineFormattedText(trimmed.replace("### ", ""))}
                 </h3>
             );
@@ -191,7 +254,7 @@ function MarkdownBlock({ text }: { text: string }) {
             elements.push(
                 <div key={idx} className="flex items-start gap-3 my-1.5 ml-2">
                     <span className="h-2 w-2 rounded-full bg-neon-green mt-2 shrink-0 shadow-[0_0_8px_rgba(0,255,148,0.6)]" />
-                    <div className="text-gray-300">
+                    <div className="text-gray-300 font-bangla">
                         {renderInlineFormattedText(listText)}
                     </div>
                 </div>
@@ -201,13 +264,14 @@ function MarkdownBlock({ text }: { text: string }) {
 
         // 5. Standard Paragraphs
         elements.push(
-            <p key={idx} className="my-3 leading-relaxed text-gray-300">
+            <p key={idx} className="my-3 leading-relaxed text-gray-300 font-bangla">
                 {renderInlineFormattedText(line)}
             </p>
         );
     });
 
     flushCallout();
+    flushTable();
 
     return <>{elements}</>;
 }

@@ -2,7 +2,6 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { calcLevel } from "@/lib/gamification/constants";
 
 export async function submitQuizAnswer(
     questionId: string,
@@ -38,49 +37,8 @@ export async function submitQuizAnswer(
         return { error: "Failed to record attempt" };
     }
 
-    // 3. Handle Rewards (If Correct)
-    let xpGained = 0;
-    let message = isCorrect ? "Correct answer!" : "Incorrect answer.";
-
-    if (isCorrect) {
-        // Check if previously answered correctly (to prevent infinite XP farming)
-        const { data: previousCorrect } = await supabase
-            .from("quiz_attempts")
-            .select("id")
-            .eq("user_id", user.id)
-            .eq("question_id", questionId)
-            .eq("is_correct", true)
-            .neq("attempted_at", new Date().toISOString()) // Exclude just inserted (approx check, strictly should use ID)
-            .limit(1); // just need to know if any exist
-
-        // Wait, the insert happened above. So we need to check if there is MORE than 1 correct attempt now.
-        // Or simpler: Check count of correct attempts.
-
-        const { count } = await supabase
-            .from("quiz_attempts")
-            .select("*", { count: 'exact', head: true })
-            .eq("user_id", user.id)
-            .eq("question_id", questionId)
-            .eq("is_correct", true);
-
-        // If this is the FIRST correct attempt, award XP.
-        if (count === 1) {
-            const points = question.points || 10;
-
-            // Fetch User
-            const { data: profile } = await supabase.from("profiles").select("total_xp, level").eq("id", user.id).single();
-            const currentXP = profile?.total_xp || 0;
-            const newXP = currentXP + points;
-            const newLevel = calcLevel(newXP);
-
-            await supabase.from("profiles").update({ total_xp: newXP, level: newLevel }).eq("id", user.id);
-
-            xpGained = points;
-            message = `Correct! +${points} XP`;
-        } else {
-            message = "Correct! (Already mastered)";
-        }
-    }
+    // 3. Feedback message
+    const message = isCorrect ? "Correct answer!" : "Incorrect answer.";
 
     // Mark Lesson as Complete in User Progress
     // Get lesson ID from question -> lesson_id is nested in quizzes relation
@@ -98,7 +56,7 @@ export async function submitQuizAnswer(
     }
 
     revalidatePath(`/academy/${courseSlug}/${lessonSlug}`);
-    return { success: true, isCorrect, xpGained, message };
+    return { success: true, isCorrect, message };
 }
 
 export async function getQuizForLesson(lessonId: string) {
@@ -166,30 +124,6 @@ export async function submitQuizAnswers(
 
     const score = totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 100;
     const passed = score >= 60;
-    const xp_earned = passed ? earnedPoints : 0;
-
-    let leveled_up = false;
-    let new_level = 1;
-    let new_total_xp = 0;
-
-    if (passed && xp_earned > 0) {
-        const { data: profile } = await supabase
-            .from("profiles")
-            .select("total_xp, level")
-            .eq("id", user.id)
-            .single();
-
-        const currentXP = profile?.total_xp || 0;
-        const currentLevel = profile?.level || 1;
-        new_total_xp = currentXP + xp_earned;
-        new_level = calcLevel(new_total_xp);
-        leveled_up = new_level > currentLevel;
-
-        await supabase
-            .from("profiles")
-            .update({ total_xp: new_total_xp, level: new_level })
-            .eq("id", user.id);
-    }
 
     // Mark Lesson as Complete in User Progress if passed
     if (passed && questions && questions.length > 0) {
@@ -212,13 +146,9 @@ export async function submitQuizAnswers(
     return {
         submission_id: Date.now().toString(),
         score,
-        xp_earned,
         passed,
         results,
         explanations,
         correct_answers,
-        leveled_up,
-        new_level,
-        new_total_xp,
     };
 }

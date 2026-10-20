@@ -160,8 +160,8 @@ export function SkillTree() {
 
                     <div className="border-t border-white/5 pt-4 mt-6 text-[10px] font-mono text-gray-400 leading-4">
                         <div className="flex justify-between mb-1">
-                            <span>SUNK CAREER CAPITAL:</span>
-                            <span className="text-neon-green">45,000 XP</span>
+                            <span>SPECIALIZATION TRACK:</span>
+                            <span className="text-neon-green">ACTIVE (ADVANCED)</span>
                         </div>
                         <div className="flex justify-between">
                             <span>RECRUITMENT LINK:</span>

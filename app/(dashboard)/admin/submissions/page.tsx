@@ -1,6 +1,6 @@
 import { SectionHeading } from "@/components/ui/section-heading";
 import { GlassCard } from "@/components/ui/glass-card";
-import { FileCheck, Check, X, Clock, User, Code } from "lucide-react";
+import { Check, X, Clock, User, Code } from "lucide-react";
 import { getPendingSubmissions, reviewSubmission } from "@/actions/admin-problems";
 import { requireAdmin } from "@/lib/auth/assert-role";
 import Link from "next/link";
@@ -9,9 +9,22 @@ import { Button } from "@/components/ui/button";
 export const metadata = { title: "Admin — Submission Queue" };
 export const dynamic = "force-dynamic";
 
+interface AdminSubmission {
+    id: string;
+    user_name: string;
+    user_role: string;
+    problem_title: string;
+    problem_xp: number;
+    status: 'pending' | 'approved' | 'rejected' | string;
+    code_submission: string;
+    submitted_at?: string;
+    started_at?: string;
+    admin_feedback?: string | null;
+}
+
 export default async function AdminSubmissionsPage() {
     await requireAdmin();
-    const submissions = await getPendingSubmissions();
+    const submissions = (await getPendingSubmissions()) as unknown as AdminSubmission[];
 
     const pendingCount = submissions.filter(s => s.status === 'pending').length;
     const approvedCount = submissions.filter(s => s.status === 'approved').length;
@@ -22,7 +35,7 @@ export default async function AdminSubmissionsPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
                 <div>
                     <SectionHeading title="Submission Review Queue" subtitle="EVALUATION COMMAND" className="mb-0" />
-                    <p className="text-gray-400 text-sm mt-1">Review student code submissions and approve XP awards.</p>
+                    <p className="text-gray-400 text-sm mt-1">Review student code submissions and verify analytical solutions.</p>
                 </div>
                 <div className="flex gap-3">
                     <Link href="/admin">
@@ -71,7 +84,7 @@ export default async function AdminSubmissionsPage() {
 
                 <div className="divide-y divide-white/[0.04]">
                     {submissions.length > 0 ? (
-                        submissions.map((sub: any) => (
+                        submissions.map((sub: AdminSubmission) => (
                             <div key={sub.id} className="p-6 space-y-4 hover:bg-white/[0.01] transition-colors">
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                     <div className="flex items-center gap-3">
@@ -84,7 +97,7 @@ export default async function AdminSubmissionsPage() {
                                                 <span className="text-xs font-mono font-normal text-gray-400">({sub.user_role})</span>
                                             </h4>
                                             <p className="text-xs text-gray-400 font-mono mt-0.5">
-                                                Problem: <span className="text-neon-green font-bold">{sub.problem_title}</span> (+{sub.problem_xp} XP)
+                                                Problem: <span className="text-neon-green font-bold">{sub.problem_title}</span>
                                             </p>
                                         </div>
                                     </div>
@@ -105,7 +118,7 @@ export default async function AdminSubmissionsPage() {
                                                     await reviewSubmission(sub.id, "approved", "Good solution!");
                                                 }}>
                                                     <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-8">
-                                                        <Check className="mr-1 h-3.5 w-3.5" /> Approve (+{sub.problem_xp} XP)
+                                                        <Check className="mr-1 h-3.5 w-3.5" /> Approve Solution
                                                     </Button>
                                                 </form>
 
@@ -126,7 +139,7 @@ export default async function AdminSubmissionsPage() {
                                 <div className="rounded-lg bg-black/50 border border-white/10 p-4 overflow-x-auto font-mono text-xs text-gray-300">
                                     <div className="flex items-center justify-between text-gray-500 mb-2 border-b border-white/5 pb-2">
                                         <span className="flex items-center gap-1"><Code className="h-3.5 w-3.5" /> SUBMITTED SOLUTION</span>
-                                        <span>Submitted: {new Date(sub.submitted_at || sub.started_at).toLocaleString()}</span>
+                                        <span>Submitted: {new Date(sub.submitted_at || sub.started_at || Date.now()).toLocaleString()}</span>
                                     </div>
                                     <pre className="whitespace-pre-wrap leading-relaxed">{sub.code_submission}</pre>
                                 </div>

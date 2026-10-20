@@ -52,7 +52,7 @@ BEGIN
     'r-agri-data-bau', 
     'Bangladesh Agricultural University Special Edition. Master R for Data Science, ML & GIS from absolute zero.', 
     TRUE,
-    'https://www.computerworld.com/wp-content/uploads/2024/09/1534430-0-41575800-1726249957-r_programming_language_abstract_programming_background_thinkstock_3x2_1200x800-100703503-orig.jpg?quality=50&strip=all&w=1024'
+    '/images/courses/r-agri-data-bau.png'
   ) RETURNING id INTO r_cid;
 
   -- ================================================================================================

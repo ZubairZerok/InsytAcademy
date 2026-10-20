@@ -174,28 +174,11 @@ export async function reviewSubmission(
         return { error: "Submission not found." };
     }
 
-    const xpReward = (submission.problems as any)?.xp_reward || 150;
-    let xpAwarded = 0;
-
-    if (status === "approved") {
-        // Award XP to student via DB RPC
-        const { data: xpResult } = await admin.rpc("award_xp", {
-            p_user_id: submission.user_id,
-            p_event: "problem_solve",
-            p_source_id: `problem_${submission.problem_id}`,
-            p_xp: xpReward,
-            p_meta: { problem_id: submission.problem_id, attempt_id: submissionId },
-        });
-
-        xpAwarded = (xpResult as { xp_awarded?: number })?.xp_awarded ?? xpReward;
-    }
-
     const { error: updateError } = await admin
         .from("problem_attempts")
         .update({
             status,
             is_correct: status === "approved",
-            xp_earned: xpAwarded,
             admin_feedback: feedback || null,
             reviewed_at: new Date().toISOString(),
         })
@@ -209,5 +192,5 @@ export async function reviewSubmission(
     revalidatePath("/admin/submissions");
     revalidatePath("/admin");
     revalidatePath("/academy/arena");
-    return { success: true, xpAwarded };
+    return { success: true };
 }

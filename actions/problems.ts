@@ -172,7 +172,10 @@ function gradeAnswer(
   }
   if (answerType === "regex") {
     try {
-      return new RegExp(e).test(s);
+      // Guard against catastrophic backtracking: limit pattern length
+      if (e.length > 200) return false;
+      const re = new RegExp(e);
+      return re.test(s.slice(0, 5000)); // cap input length too
     } catch {
       return false;
     }
@@ -253,27 +256,12 @@ export async function submitProblemCode(data: {
 
   if (insertError) return { success: false, error: 'Could not record your submission. Please try again.' }
 
-  // Award XP instantly on a correct auto-graded answer (idempotent per problem).
-  let xpAwarded = 0
-  if (canAutoGrade && isCorrect) {
-    const { data: xpResult } = await admin.rpc('award_xp', {
-      p_user_id: user.id,
-      p_event: 'problem_solve',
-      p_source_id: `problem_${data.problem_id}`,
-      p_xp: problem.xp_reward ?? 150,
-      p_meta: { problem_id: data.problem_id, attempt_id: submission.id },
-    })
-    xpAwarded = (xpResult as { xp_awarded?: number })?.xp_awarded ?? 0
-    await admin.from('problem_attempts').update({ xp_earned: xpAwarded }).eq('id', submission.id)
-  }
-
   revalidatePath('/academy/arena')
   return {
     success: true,
     submission_id: submission.id,
     graded: canAutoGrade,
     correct: canAutoGrade ? isCorrect : undefined,
-    xp_awarded: xpAwarded,
   }
 }
 

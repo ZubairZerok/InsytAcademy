@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { GlassCard } from "@/components/ui/glass-card";
-import { Award, Lock, Sparkles, CheckCircle2 } from "lucide-react";
+import { Award, Lock, CheckCircle2 } from "lucide-react";
 import type { UserBadgeDisplay } from "@/types/gamification";
 
 interface BadgeShowcaseProps {
@@ -12,19 +12,21 @@ interface BadgeShowcaseProps {
 export function BadgeShowcase({ badges }: BadgeShowcaseProps) {
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
+    const academicBadges = badges.filter(
+        b => b.category !== "streak" && b.category !== "xp" && !b.id.startsWith("streak_") && !b.id.startsWith("xp_")
+    );
+
     const categories = [
-        { id: "all", label: "ALL BADGES" },
-        { id: "learning", label: "LEARNING" },
-        { id: "streak", label: "STREAKS" },
-        { id: "arena", label: "ARENA" },
-        { id: "xp", label: "XP & MILESTONES" },
+        { id: "all", label: "ALL ACHIEVEMENTS" },
+        { id: "learning", label: "CURRICULUM" },
+        { id: "arena", label: "ARENA & CODE" },
     ];
 
     const filteredBadges = selectedCategory === "all"
-        ? badges
-        : badges.filter(b => b.category === selectedCategory);
+        ? academicBadges
+        : academicBadges.filter(b => b.category === selectedCategory);
 
-    const unlockedCount = badges.filter(b => b.unlocked).length;
+    const unlockedCount = academicBadges.filter(b => b.unlocked).length;
 
     const rarityStyles: Record<string, { border: string; bg: string; text: string; glow: string }> = {
         common: {
@@ -63,10 +65,10 @@ export function BadgeShowcase({ badges }: BadgeShowcaseProps) {
                     </div>
                     <div>
                         <h3 className="font-mono text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                            INSIGNIA SHOWCASE
+                            ACADEMIC ACHIEVEMENTS
                         </h3>
                         <p className="text-xs text-gray-400 font-mono">
-                            {unlockedCount} of {badges.length} Badges Unlocked
+                            {unlockedCount} of {academicBadges.length} Credentials Unlocked
                         </p>
                     </div>
                 </div>
@@ -124,11 +126,6 @@ export function BadgeShowcase({ badges }: BadgeShowcaseProps) {
                                 <p className="text-xs text-gray-400 leading-relaxed">
                                     {badge.description}
                                 </p>
-                                {badge.xp_bonus > 0 && (
-                                    <span className="text-[10px] font-mono font-bold text-neon-green block pt-1">
-                                        +{badge.xp_bonus} XP BONUS
-                                    </span>
-                                )}
                             </div>
                         </GlassCard>
                     );

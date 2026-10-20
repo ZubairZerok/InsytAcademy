@@ -5,21 +5,21 @@ import type { Opportunity } from "@/types/opportunity";
 
 export async function getOpportunities(typeFilter?: string, searchKeyword?: string): Promise<{
     opportunities: Opportunity[];
-    userLevel: number;
+    completedLessonsCount: number;
+    userLevel?: number;
 }> {
     const supabase = createClient();
 
-    // 1. Get User Profile Level
+    // 1. Get User Completed Lessons
     const { data: { user } } = await supabase.auth.getUser();
-    let userLevel = 1;
+    let completedLessonsCount = 0;
 
     if (user) {
-        const { data: profile } = await supabase
-            .from("profiles")
-            .select("level")
-            .eq("id", user.id)
-            .single();
-        if (profile) userLevel = profile.level || 1;
+        const { count } = await supabase
+            .from("user_progress")
+            .select("id", { count: 'exact', head: true })
+            .eq("user_id", user.id);
+        completedLessonsCount = count || 0;
     }
 
     // 2. Fetch Opportunities
@@ -43,7 +43,7 @@ export async function getOpportunities(typeFilter?: string, searchKeyword?: stri
 
     if (error || !data) {
         console.error("Error fetching opportunities:", error);
-        return { opportunities: fallbackOpportunities, userLevel };
+        return { opportunities: fallbackOpportunities, completedLessonsCount, userLevel: 1 };
     }
 
     // 3. Check which opportunities the user has applied for
@@ -64,7 +64,7 @@ export async function getOpportunities(typeFilter?: string, searchKeyword?: stri
         user_has_applied: userApplications.has(item.id)
     }));
 
-    return { opportunities, userLevel };
+    return { opportunities, completedLessonsCount, userLevel: 1 };
 }
 
 export async function applyForOpportunity(opportunityId: string, coverNote: string, portfolioLink?: string) {
@@ -73,7 +73,7 @@ export async function applyForOpportunity(opportunityId: string, coverNote: stri
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { success: false, error: "Authentication required to apply." };
 
-    // Fetch opportunity to verify min_level
+    // Fetch opportunity to verify existence
     const { data: opp, error: oppErr } = await supabase
         .from("opportunities")
         .select("*")
@@ -81,21 +81,6 @@ export async function applyForOpportunity(opportunityId: string, coverNote: stri
         .single();
 
     if (oppErr || !opp) return { success: false, error: "Opportunity position not found." };
-
-    // Fetch user profile level
-    const { data: profile } = await supabase
-        .from("profiles")
-        .select("level")
-        .eq("id", user.id)
-        .single();
-
-    const userLevel = profile?.level || 1;
-    if (userLevel < opp.min_level_required) {
-        return {
-            success: false,
-            error: `Level ${opp.min_level_required} qualification required. Your current level is ${userLevel}. Complete more lessons to level up!`
-        };
-    }
 
     // Insert Application
     const { error } = await supabase

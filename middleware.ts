@@ -53,7 +53,14 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  const needsAuth = AUTH_REQUIRED_PREFIXES.some((p) => path.startsWith(p));
+  
+  // Public course preview exemptions: allow visitors to browse catalog & inspect course syllabi
+  const isPublicCatalog = path === "/academy/courses";
+  const isPublicCourseDetail = /^\/academy\/[a-zA-Z0-9_-]+$/.test(path) && 
+    !["/academy/simulator", "/academy/arena", "/academy/settings", "/academy/certificates", "/academy/profile"].includes(path);
+  const isAuthExempt = isPublicCatalog || isPublicCourseDetail;
+
+  const needsAuth = !isAuthExempt && AUTH_REQUIRED_PREFIXES.some((p) => path.startsWith(p));
 
   if (!user && needsAuth) {
     const url = request.nextUrl.clone();

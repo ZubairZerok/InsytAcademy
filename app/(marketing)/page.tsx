@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
     Leaf, Dna, TreePine, Microscope, FlaskConical, Bug,
     ArrowRight, Users, BookOpen, Award, Star, TrendingUp,
-    ChevronRight, Zap, Globe2, Shield
+    ChevronRight, Zap, Globe2, Shield, Compass, Layers, Cpu, Binary
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -163,6 +163,294 @@ export default async function Home() {
                                 <div className="text-xs font-mono uppercase tracking-wider text-gray-400">{stat.label}</div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════
+                DEDICATED GIS LEARNING PATHWAY (BLOCK-LEVEL ROW)
+                Strictly holds the 3 sequential GIS courses in a single row
+               ═══════════════════════════════════════════════════ */}
+            <section className="py-24 container mx-auto px-4 md:px-6">
+                <div className="rounded-3xl border border-emerald-500/20 bg-gradient-to-b from-emerald-950/25 via-agri-dark/90 to-agri-dark/60 p-8 md:p-12 shadow-[0_0_60px_rgba(0,255,148,0.04)] space-y-12">
+                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                        <div className="max-w-3xl space-y-4">
+                            <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/25 rounded-full px-4 py-1.5 text-xs font-mono text-emerald-400">
+                                <Compass className="h-3.5 w-3.5" />
+                                <span>FLAGSHIP GEOSPATIAL PATHWAY • 3 SEQUENTIAL STAGES</span>
+                            </div>
+                            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
+                                The 3-Stage GIS & Earth Observation Pathway
+                            </h2>
+                            <p className="text-base md:text-lg text-gray-400 leading-relaxed">
+                                A deliberate progression engineered from first principles: moving learners sequentially from spatial thinking and cartography to analytical remote sensing, and ending with enterprise cloud GIS and spatial databases.
+                            </p>
+                        </div>
+                        <div className="hidden lg:flex items-center gap-3 text-xs font-mono text-gray-400 bg-white/5 border border-white/10 px-5 py-3 rounded-2xl shrink-0">
+                            <span className="text-emerald-400 font-bold">Stage 1: Foundations</span>
+                            <ArrowRight className="h-4 w-4 text-gray-500" />
+                            <span className="text-cyan-400 font-bold">Stage 2: Analyst</span>
+                            <ArrowRight className="h-4 w-4 text-gray-500" />
+                            <span className="text-purple-400 font-bold">Stage 3: Cloud Engineer</span>
+                        </div>
+                    </div>
+
+                    {/* Single Row: Exactly 3 GIS Courses */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* Course 1: Foundations */}
+                        <div className="rounded-2xl border border-emerald-500/30 bg-black/40 p-8 flex flex-col justify-between hover:border-emerald-500/60 transition-all duration-300 group hover:bg-black/60 shadow-lg">
+                            <div className="space-y-4">
+                                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-emerald-500/20 bg-black/40">
+                                    <img
+                                        src="/images/courses/gis-spatial-foundations.png"
+                                        alt="Spatial Literacy & GIS Foundations"
+                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                                    <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded border border-white/10 text-xs font-mono text-emerald-400">
+                                        <Globe2 className="h-3.5 w-3.5" />
+                                        <span>STAGE 01</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                                        <Globe2 className="h-5 w-5" />
+                                    </div>
+                                    <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                        STAGE 01 • ZERO PREREQS
+                                    </span>
+                                </div>
+                                <h3 className="text-2xl font-bold text-white group-hover:text-emerald-400 transition-colors font-mono">
+                                    Spatial Literacy & GIS Foundations
+                                </h3>
+                                <p className="text-sm text-gray-400 leading-relaxed">
+                                    Spatial thinking, Coordinate Reference Systems (CRS/WGS84/UTM), Vector-Raster primitives, QGIS GUI mastery, attribute data modeling, and publication-ready cartography.
+                                </p>
+                                <div className="pt-2 flex flex-wrap gap-2 text-xs font-mono text-gray-400">
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">QGIS Desktop</span>
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">WGS84 & UTM</span>
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">Vector & Raster</span>
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">Cartography</span>
+                                </div>
+                            </div>
+                            <div className="pt-8 mt-auto">
+                                <Link href="/academy/gis-spatial-foundations">
+                                    <Button className="w-full bg-emerald-500 text-agri-black hover:bg-emerald-400 font-bold rounded-xl h-11">
+                                        Access Stage 01
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Course 2: Analysis & Remote Sensing */}
+                        <div className="rounded-2xl border border-cyan-500/30 bg-black/40 p-8 flex flex-col justify-between hover:border-cyan-500/60 transition-all duration-300 group hover:bg-black/60 shadow-lg">
+                            <div className="space-y-4">
+                                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-cyan-500/20 bg-black/40">
+                                    <img
+                                        src="/images/courses/gis-analysis-remote-sensing.png"
+                                        alt="GIS Analysis & Remote Sensing"
+                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                                    <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded border border-white/10 text-xs font-mono text-cyan-400">
+                                        <Layers className="h-3.5 w-3.5" />
+                                        <span>STAGE 02</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="h-10 w-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                                        <Layers className="h-5 w-5" />
+                                    </div>
+                                    <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                        STAGE 02 • ANALYST
+                                    </span>
+                                </div>
+                                <h3 className="text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors font-mono">
+                                    GIS Analysis & Remote Sensing
+                                </h3>
+                                <p className="text-sm text-gray-400 leading-relaxed">
+                                    Vector geoprocessing (Buffer, Clip, Intersect, Dissolve), DEM terrain modeling, satellite remote sensing, spectral indices (NDVI/EVI), and supervised machine learning classification.
+                                </p>
+                                <div className="pt-2 flex flex-wrap gap-2 text-xs font-mono text-gray-400">
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">Geoprocessing</span>
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">DEM & Slope</span>
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">NDVI / NDWI</span>
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">Sentinel-2</span>
+                                </div>
+                            </div>
+                            <div className="pt-8 mt-auto">
+                                <Link href="/academy/gis-analysis-remote-sensing">
+                                    <Button className="w-full bg-cyan-500 text-agri-black hover:bg-cyan-400 font-bold rounded-xl h-11">
+                                        Access Stage 02
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Course 3: Geospatial Engineering & Cloud */}
+                        <div className="rounded-2xl border border-purple-500/30 bg-black/40 p-8 flex flex-col justify-between hover:border-purple-500/60 transition-all duration-300 group hover:bg-black/60 shadow-lg">
+                            <div className="space-y-4">
+                                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-purple-500/20 bg-black/40">
+                                    <img
+                                        src="/images/courses/gis-engineering-cloud.png"
+                                        alt="Geospatial Engineering & Cloud GIS"
+                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                                    <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded border border-white/10 text-xs font-mono text-purple-400">
+                                        <Cpu className="h-3.5 w-3.5" />
+                                        <span>STAGE 03</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="h-10 w-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                                        <Cpu className="h-5 w-5" />
+                                    </div>
+                                    <span className="text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/20 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                        STAGE 03 • ENTERPRISE
+                                    </span>
+                                </div>
+                                <h3 className="text-2xl font-bold text-white group-hover:text-purple-400 transition-colors font-mono">
+                                    Geospatial Engineering & Cloud GIS
+                                </h3>
+                                <p className="text-sm text-gray-400 leading-relaxed">
+                                    PostgreSQL/PostGIS spatial databases, Spatial SQL, Python pipelines (GeoPandas, Rasterio), Google Earth Engine planetary computing, R spatial stacks, and Web GIS.
+                                </p>
+                                <div className="pt-2 flex flex-wrap gap-2 text-xs font-mono text-gray-400">
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">PostGIS SQL</span>
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">GeoPandas</span>
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">Earth Engine</span>
+                                    <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">GeoServer</span>
+                                </div>
+                            </div>
+                            <div className="pt-8 mt-auto">
+                                <Link href="/academy/gis-engineering-cloud">
+                                    <Button className="w-full bg-purple-500 text-white hover:bg-purple-400 font-bold rounded-xl h-11">
+                                        Access Stage 03
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════
+                DATA SCIENCE & ARTIFICIAL INTELLIGENCE PROTOCOLS
+               ═══════════════════════════════════════════════════ */}
+            <section className="py-24 container mx-auto px-4 md:px-6">
+                <div className="max-w-3xl mb-16 space-y-4">
+                    <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 text-xs font-mono text-cyan-400">
+                        <Binary className="h-3.5 w-3.5" />
+                        <span>COMPUTATIONAL SPECIALIZATIONS</span>
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                        Statistical Computing &<br />
+                        <span className="text-cyan-400">Production AI Protocols.</span>
+                    </h2>
+                    <p className="text-lg text-gray-400 leading-relaxed">
+                        Exhaustive curricula engineered for researchers, data scientists, and agricultural specialists requiring deep analytical competence.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* R for Agri-Science */}
+                    <div className="rounded-2xl border border-white/10 bg-agri-dark/60 p-8 flex flex-col justify-between hover:border-cyan-500/40 transition-all group">
+                        <div className="space-y-4">
+                            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-cyan-500/20 bg-black/40">
+                                <img
+                                    src="/images/courses/r-agri-data-bau.png"
+                                    alt="R for Agri-Science & Analytics"
+                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                                <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded border border-white/10 text-xs font-mono text-cyan-400">
+                                    <TrendingUp className="h-3.5 w-3.5" />
+                                    <span>R PROTOCOL</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <div className="h-10 w-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                                    <TrendingUp className="h-5 w-5" />
+                                </div>
+                                <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                    22 MODULES • 102 LESSONS • BAU EDITION
+                                </span>
+                            </div>
+                            <span className="text-[11px] font-mono uppercase text-cyan-400 font-bold tracking-wider">DATA SCIENCE & STATISTICS</span>
+                            <h3 className="text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors">
+                                R for Agri-Science & Analytics
+                            </h3>
+                            <p className="text-sm text-gray-400 leading-relaxed">
+                                Complete Tidyverse data manipulation, publication-grade ggplot2 visualization, experimental design (RCBD, ANOVA, Tukey HSD), classical regression, spatial R, and interactive R Shiny web applications.
+                            </p>
+                            <div className="pt-2 flex flex-wrap gap-2 text-xs font-mono text-gray-400">
+                                <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">Tidyverse</span>
+                                <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">ggplot2</span>
+                                <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">ANOVA / RCBD</span>
+                                <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">Machine Learning</span>
+                                <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">R Shiny</span>
+                            </div>
+                        </div>
+                        <div className="pt-8 mt-auto">
+                            <Link href="/academy/r-agri-data-bau">
+                                <Button className="w-full bg-cyan-500 text-agri-black hover:bg-cyan-400 font-bold rounded-xl h-11">
+                                    Access Protocol
+                                    <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* ML Masterclass */}
+                    <div className="rounded-2xl border border-white/10 bg-agri-dark/60 p-8 flex flex-col justify-between hover:border-purple-500/40 transition-all group">
+                        <div className="space-y-4">
+                            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-purple-500/20 bg-black/40">
+                                <img
+                                    src="/images/courses/ml-masterclass.png"
+                                    alt="The Machine Learning Masterclass"
+                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                                <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded border border-white/10 text-xs font-mono text-purple-400">
+                                    <Microscope className="h-3.5 w-3.5" />
+                                    <span>ML PROTOCOL</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <div className="h-10 w-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                                    <Microscope className="h-5 w-5" />
+                                </div>
+                                <span className="text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/20 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                    AI & PRODUCTION DEPLOYMENT
+                                </span>
+                            </div>
+                            <span className="text-[11px] font-mono uppercase text-purple-400 font-bold tracking-wider">MACHINE LEARNING & AI</span>
+                            <h3 className="text-2xl font-bold text-white group-hover:text-purple-400 transition-colors">
+                                The Machine Learning Masterclass
+                            </h3>
+                            <p className="text-sm text-gray-400 leading-relaxed">
+                                Mathematical foundations, Scikit-Learn pipelines, tree ensembles (XGBoost/LightGBM), deep learning with PyTorch, computer vision, modern Transformers/LLMs, and production MLOps.
+                            </p>
+                            <div className="pt-2 flex flex-wrap gap-2 text-xs font-mono text-gray-400">
+                                <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">Scikit-Learn</span>
+                                <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">PyTorch</span>
+                                <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">Transformers</span>
+                                <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">FastAPI</span>
+                                <span className="bg-white/5 px-2.5 py-1 rounded border border-white/10">MLOps</span>
+                            </div>
+                        </div>
+                        <div className="pt-8 mt-auto">
+                            <Link href="/academy/ml-masterclass">
+                                <Button className="w-full bg-purple-500 text-white hover:bg-purple-400 font-bold rounded-xl h-11">
+                                    Access Protocol
+                                    <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>

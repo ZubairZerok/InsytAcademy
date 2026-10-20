@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Zap, ChevronRight } from "lucide-react";
+import { CheckCircle, ChevronRight } from "lucide-react";
 import { completeLesson } from "@/actions/progress";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -34,8 +34,6 @@ export function LessonCompleteButton({
 
         if (result?.success) {
             setCompleted(true);
-            // Simple alert for MVP feedback, ideally replace with Toast
-            // alert(`+${result.xpGained} XP! System Updated.`);
             if (nextLessonUrl) {
                 router.push(nextLessonUrl);
                 router.refresh();
@@ -67,8 +65,8 @@ export function LessonCompleteButton({
             className={cn("group relative overflow-hidden w-full justify-between", className)}
         >
             <div className="flex items-center">
-                <Zap className="mr-2 h-4 w-4 fill-current group-hover:animate-pulse" />
-                {nextLessonUrl ? "COMPLETE & CONTINUE (+50 XP)" : "COMPLETE MODULE (+50 XP)"}
+                <CheckCircle className="mr-2 h-4 w-4 text-black group-hover:scale-110 transition-transform" />
+                <span>{nextLessonUrl ? "COMPLETE & CONTINUE" : "MARK AS COMPLETED"}</span>
             </div>
             {nextLessonUrl && <ChevronRight className="ml-2 h-4 w-4" />}
 

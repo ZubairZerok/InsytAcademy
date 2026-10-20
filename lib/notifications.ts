@@ -40,43 +40,9 @@ export async function createNotification(
   }
 }
 
-/**
- * When a user gains XP and overtakes others, notify the overtaken users.
- * Identity/XP are supplied by trusted server code (progress.ts), never the client.
- */
-export async function triggerBypassCheck(
-  activeUserId: string,
-  activeUserName: string,
-  oldXP: number,
-  newXP: number
-) {
-  if (!Number.isFinite(oldXP) || !Number.isFinite(newXP) || newXP <= oldXP) return;
-  try {
-    const admin = createAdminClient();
-    const { data: bypassed } = await admin
-      .from("profiles")
-      .select("id, total_xp")
-      .neq("id", activeUserId)
-      .gte("total_xp", oldXP)
-      .lt("total_xp", newXP)
-      .limit(50);
-
-    if (!bypassed || bypassed.length === 0) return;
-
-    const safeName = String(activeUserName).slice(0, 80);
-    const rows = bypassed.map((p) => ({
-      user_id: p.id,
-      title: "⚡ Leaderboard Alert",
-      message: `${safeName} just overtook you on the leaderboard. Keep learning to reclaim your rank!`,
-      type: "leaderboard",
-      link: "/leaderboard",
-      is_read: false,
-      created_at: new Date().toISOString(),
-    }));
-
-    // Single batched insert instead of N sequential round-trips.
-    await admin.from("notifications").insert(rows);
-  } catch (e) {
-    console.error("Leaderboard bypass check failed:", e);
-  }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function triggerBypassCheck(..._args: unknown[]) {
+  // Gamification XP bypasses deprecated
+  return;
 }
+

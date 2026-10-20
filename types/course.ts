@@ -43,6 +43,16 @@ export interface LessonData {
     prevLesson: { id: string; slug: string; title: string } | null;
 }
 
+export interface ModuleProgress {
+    id: string;
+    title: string;
+    order_index: number;
+    totalLessons: number;
+    completedLessons: number;
+    isCompleted: boolean;
+    isCurrent: boolean;
+}
+
 export interface EnrolledCourse {
     id: string;
     title: string;
@@ -55,6 +65,12 @@ export interface EnrolledCourse {
     lastAccessed: string | null;
     isEnrolled?: boolean;
     nextLessonSlug?: string;
+    nextLessonTitle?: string;
+    currentModuleTitle?: string;
+    currentModuleIndex?: number;
+    totalModules?: number;
+    completedModulesCount?: number;
+    modulesProgress?: ModuleProgress[];
 }
 
 export interface UserProgress {

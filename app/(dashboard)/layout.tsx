@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import { DashboardSidebar } from "@/components/layout/dashboard-sidebar";
 import { DashboardTopbar } from "@/components/layout/dashboard-topbar";
 

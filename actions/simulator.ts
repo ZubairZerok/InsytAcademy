@@ -1,5 +1,7 @@
 "use server";
 
+import { safeEvalMath } from "@/lib/safe-math";
+
 type CommandResponse = {
     output: string[];
     type: "success" | "error" | "info" | "warning";
@@ -44,7 +46,7 @@ export async function processCommand(command: string): Promise<CommandResponse> 
             // In a real app, fetch user from Supabase here
             return {
                 type: "info",
-                output: ["USER: AGENT_007", "ROLE: OPERATOR", "CLEARANCE: LEVEL 1"],
+                output: ["USER: RESEARCHER", "ROLE: SCHOLAR", "CLEARANCE: VERIFIED"],
             };
 
         case "scan":
@@ -83,9 +85,7 @@ function simulateRExecution(cmd: string): string[] | null {
     // 1. Basic Math Detection (Numbers and operators only)
     if (/^[\d\s\+\-\*\/\(\)\.]+$/.test(cmd)) {
         try {
-            // Safe(ish) eval for numbers
-            // eslint-disable-next-line no-new-func
-            const result = new Function(`return ${cmd}`)();
+            const result = safeEvalMath(cmd);
             return [`[1] ${result}`];
         } catch (e) {
             return null;

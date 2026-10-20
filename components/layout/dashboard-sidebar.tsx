@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
     Menu, X, LayoutDashboard, BookOpen, Settings, Terminal,
-    Award, TrendingUp, ChevronRight, ChevronLeft, Trophy, Swords, Briefcase
+    Award, TrendingUp, ChevronRight, ChevronLeft, Swords, Briefcase
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NotificationHub } from "@/components/academy/notification-hub";
@@ -16,7 +16,6 @@ const sidebarItems = [
     { name: "Code Lab", href: "/academy/simulator", icon: Terminal },
     { name: "Arena", href: "/academy/arena", icon: Swords },
     { name: "Opportunities", href: "/opportunities", icon: Briefcase },
-    { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
     { name: "Certificates", href: "/academy/certificates", icon: Award },
     { name: "Settings", href: "/academy/settings", icon: Settings },
 ];

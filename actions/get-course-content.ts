@@ -24,6 +24,7 @@ export type CourseContent = {
     title: string;
     slug: string;
     description: string | null;
+    thumbnail_url?: string | null;
     modules: Module[];
     completedLessonIds: string[];
 };
@@ -40,6 +41,7 @@ export async function getCourseBySlug(slug: string): Promise<CourseContent | nul
             title, 
             description, 
             slug, 
+            thumbnail_url,
             modules (
                 id, 
                 title, 
@@ -94,6 +96,7 @@ export async function getCourseBySlug(slug: string): Promise<CourseContent | nul
         title: course.title,
         slug: course.slug,
         description: course.description,
+        thumbnail_url: course.thumbnail_url,
         modules,
         completedLessonIds
     };

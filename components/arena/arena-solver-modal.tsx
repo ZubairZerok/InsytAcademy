@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Swords, Zap, CheckCircle2, AlertCircle, HelpCircle, Send } from "lucide-react";
+import { Swords, CheckCircle2, AlertCircle, HelpCircle, Send } from "lucide-react";
 import { submitProblemCode } from "@/actions/problems";
 import { useRouter } from "next/navigation";
 
@@ -13,26 +13,24 @@ interface ArenaSolverModalProps {
         title: string;
         slug: string;
         description: string;
-        difficulty: string;
+        difficulty: string | number;
         tags: string[];
         hints: string[];
-        xp_reward: number;
     };
     userSubmission?: {
         status: string;
-        xp_earned: number;
     } | null;
-    attemptsLeft: number;
+    attemptsLeft?: number;
 }
 
-export function ArenaSolverModal({ problem, userSubmission, attemptsLeft }: ArenaSolverModalProps) {
+export function ArenaSolverModal({ problem, userSubmission, attemptsLeft = 3 }: ArenaSolverModalProps) {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [code, setCode] = useState("");
     const [answer, setAnswer] = useState("");
     const [showHint, setShowHint] = useState(false);
     const [submitting, setSubmitting] = useState(false);
-    const [result, setResult] = useState<{ success: boolean; message: string; xp?: number } | null>(null);
+    const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
 
     const isSolved = userSubmission?.status === "approved";
     const isPending = userSubmission?.status === "pending";
@@ -56,8 +54,7 @@ export function ArenaSolverModal({ problem, userSubmission, attemptsLeft }: Aren
                 if (res.graded && res.correct) {
                     setResult({
                         success: true,
-                        message: `SOLVED! You earned +${res.xp_awarded || problem.xp_reward} XP!`,
-                        xp: res.xp_awarded || problem.xp_reward,
+                        message: "SOLVED! Your solution has been verified and approved.",
                     });
                 } else if (res.graded && !res.correct) {
                     setResult({
@@ -77,10 +74,10 @@ export function ArenaSolverModal({ problem, userSubmission, attemptsLeft }: Aren
                     message: res.error || "Submission failed.",
                 });
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             setResult({
                 success: false,
-                message: err.message || "An unexpected error occurred.",
+                message: err instanceof Error ? err.message : "An unexpected error occurred.",
             });
         } finally {
             setSubmitting(false);
@@ -120,8 +117,8 @@ export function ArenaSolverModal({ problem, userSubmission, attemptsLeft }: Aren
                         }`}>
                             {problem.difficulty}
                         </span>
-                        <span className="text-neon-green font-mono font-bold flex items-center gap-1">
-                            <Zap className="h-4 w-4 fill-current" /> +{problem.xp_reward} XP
+                        <span className="text-xs font-mono text-neon-green/80 uppercase tracking-wider">
+                            AUTOMATED VERIFICATION
                         </span>
                     </div>
                     <DialogTitle className="text-2xl font-bold text-white mt-2">

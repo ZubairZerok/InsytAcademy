@@ -2,7 +2,6 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { calcLevel } from "@/lib/gamification/constants";
 
 export async function completeLesson(lessonId: string, courseSlug: string) {
     const supabase = createClient();
@@ -60,40 +59,10 @@ export async function completeLesson(lessonId: string, courseSlug: string) {
         console.error("Auto-enroll error:", e);
     }
 
-    // Fetch Current Profile
-    const { data: profile } = await supabase
-        .from("profiles")
-        .select("total_xp, level")
-        .eq("id", user.id)
-        .single();
-
-    if (!profile) {
-        // Should ideally not happen if trigger worked
-        return { error: "Profile not found" };
-    }
-
-    // Calculate New Stats using standard level formula
-    const XP_REWARD = 50;
-    const currentXP = profile.total_xp || 0;
-    const newXP = currentXP + XP_REWARD;
-    const newLevel = calcLevel(newXP);
-
-    // Update Profile
-    const { error: updateError } = await supabase
-        .from("profiles")
-        .update({ total_xp: newXP, level: newLevel })
-        .eq("id", user.id);
-
-    if (updateError) {
-        console.error("Profile Update Error:", updateError);
-        // Note: Progress was saved, but XP failed. In a real app, use SQL transaction.
-        return { success: true, warning: "Progress saved but XP update failed" };
-    }
-
     // 4. Revalidate
     revalidatePath("/academy", "layout");
 
-    return { success: true, newLevel, xpGained: XP_REWARD };
+    return { success: true };
 }
 
 export async function checkLessonCompleted(lessonId: string) {

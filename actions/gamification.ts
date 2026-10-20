@@ -137,7 +137,7 @@ export async function getLeaderboardData(cohortId?: string): Promise<Leaderboard
   // ever receiving PII.
   const { data: profiles, error } = await admin
     .from('profiles')
-    .select('id, total_xp, level, full_name, avatar_url, streak_count, role')
+    .select('id, total_xp, full_name, avatar_url, streak_count, role')
     .order('total_xp', { ascending: false })
     .order('full_name', { ascending: true })
     .order('id', { ascending: true })
@@ -155,7 +155,6 @@ export async function getLeaderboardData(cohortId?: string): Promise<Leaderboard
     user_id: row.id,
     rank: index + 1,
     total_xp: row.total_xp || 0,
-    level: row.level || 1,
     display_name: row.full_name || 'Learner',
     avatar_url: row.avatar_url || null,
     streak_count: row.streak_count || 0,
@@ -195,7 +194,7 @@ export async function getUserGamificationProfile() {
 
   const { data } = await supabase
     .from('profiles')
-    .select('total_xp, level, streak_count, longest_streak, streak_freezes_available, last_active_date, full_name, avatar_url')
+    .select('total_xp, streak_count, longest_streak, streak_freezes_available, last_active_date, full_name, avatar_url')
     .eq('id', user.id)
     .single()
 

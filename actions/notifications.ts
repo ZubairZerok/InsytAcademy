@@ -79,10 +79,6 @@ export async function markAllNotificationsAsRead() {
     }
 }
 
-/**
- * Triggers points bypass check when User A gains XP.
- * Moved to lib/notifications.ts (server-only, not a client-invokable action).
- */
 
 /**
  * Automatically syncs notifications for new courses and new research posts on login/dashboard view

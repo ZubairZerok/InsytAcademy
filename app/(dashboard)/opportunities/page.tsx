@@ -1,18 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getOpportunities, applyForOpportunity } from "@/actions/opportunities";
 import { Opportunity } from "@/types/opportunity";
 import { Button } from "@/components/ui/button";
 import {
     Search, Briefcase, MapPin, DollarSign, Award, CheckCircle,
-    Sparkles, Building2, Send, Loader2, Link2, ExternalLink,
-    ChevronRight, Clock, ShieldCheck, UserCheck, AlertTriangle
+    Send, Loader2, Link2
 } from "lucide-react";
 
 export default function OpportunitiesPage() {
     const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
-    const [userLevel, setUserLevel] = useState<number>(1);
+    const [completedLessons, setCompletedLessons] = useState<number>(0);
     const [selectedType, setSelectedType] = useState<string>("all");
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
@@ -25,20 +24,20 @@ export default function OpportunitiesPage() {
     const [applyError, setApplyError] = useState("");
     const [applySuccess, setApplySuccess] = useState(false);
 
-    const loadOpportunities = async () => {
+    const loadOpportunities = useCallback(async () => {
         setLoading(true);
         const res = await getOpportunities(selectedType, searchQuery);
         setOpportunities(res.opportunities);
-        setUserLevel(res.userLevel);
+        setCompletedLessons(res.completedLessonsCount || 0);
         if (res.opportunities.length > 0 && !selectedOpp) {
             setSelectedOpp(res.opportunities[0]);
         }
         setLoading(false);
-    };
+    }, [selectedType, searchQuery, selectedOpp]);
 
     useEffect(() => {
         loadOpportunities();
-    }, [selectedType]);
+    }, [loadOpportunities]);
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -101,15 +100,15 @@ export default function OpportunitiesPage() {
                         Research Positions & Talent Board
                     </h1>
                     <p className="text-xs md:text-sm text-gray-400 max-w-2xl">
-                        Apply to verified Research Assistant positions, internships, and project grants with your Cadet Level credentials.
+                        Apply to verified Research Assistant positions, internships, and project grants with your academic credentials.
                     </p>
                 </div>
 
                 <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-3 rounded-xl">
                     <Award className="h-5 w-5 text-amber-400 shrink-0" />
                     <div>
-                        <div className="text-[10px] font-mono text-gray-400 uppercase">CADET QUALIFICATION</div>
-                        <div className="text-sm font-bold text-white font-mono">LEVEL {userLevel} CADET</div>
+                        <div className="text-[10px] font-mono text-gray-400 uppercase">ACADEMIC PROFILE</div>
+                        <div className="text-sm font-bold text-white font-mono">{completedLessons} LESSONS COMPLETED</div>
                     </div>
                 </div>
             </div>
@@ -168,7 +167,6 @@ export default function OpportunitiesPage() {
                     ) : (
                         opportunities.map((opp) => {
                             const isSelected = selectedOpp?.id === opp.id;
-                            const isQualified = userLevel >= opp.min_level_required;
 
                             return (
                                 <div
@@ -213,12 +211,8 @@ export default function OpportunitiesPage() {
 
                                     {/* Badges */}
                                     <div className="flex items-center justify-between pt-1 text-[10px] font-mono">
-                                        <span className={`px-2 py-0.5 rounded font-bold uppercase border ${
-                                            isQualified
-                                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                                                : "bg-amber-500/10 border-amber-500/30 text-amber-400"
-                                        }`}>
-                                            LVL {opp.min_level_required}+ REQ
+                                        <span className="px-2 py-0.5 rounded font-bold uppercase border bg-cyan-500/10 border-cyan-500/30 text-cyan-400">
+                                            {opp.opportunity_type.replace('_', ' ')}
                                         </span>
 
                                         {opp.user_has_applied ? (
@@ -227,7 +221,7 @@ export default function OpportunitiesPage() {
                                             </span>
                                         ) : (
                                             <span className="text-neon-green font-bold flex items-center gap-1">
-                                                <ZapIcon /> EASY APPLY
+                                                <ZapIcon /> APPLY
                                             </span>
                                         )}
                                     </div>
@@ -269,9 +263,9 @@ export default function OpportunitiesPage() {
                                         <DollarSign className="h-4 w-4" />
                                         <span>{selectedOpp.stipend_range}</span>
                                     </div>
-                                    <div className="flex items-center gap-1.5 text-amber-400">
+                                    <div className="flex items-center gap-1.5 text-emerald-400">
                                         <Award className="h-4 w-4" />
-                                        <span>LVL {selectedOpp.min_level_required}+ QUALIFICATION</span>
+                                        <span>OPEN APPLICATION</span>
                                     </div>
                                 </div>
                             </div>
@@ -300,7 +294,7 @@ export default function OpportunitiesPage() {
                                 </div>
                             </div>
 
-                            {/* LinkedIn Style Inline "Easy Apply" Section */}
+                            {/* Inline Application Section */}
                             <div className="border-t border-white/10 pt-6 space-y-4">
                                 {selectedOpp.user_has_applied || applySuccess ? (
                                     <div className="p-5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-mono flex items-center gap-3">
@@ -308,17 +302,7 @@ export default function OpportunitiesPage() {
                                         <div>
                                             <div className="font-bold text-white text-base">APPLICATION SUBMITTED!</div>
                                             <div className="text-xs text-gray-300">
-                                                Your cadet profile credentials and level status were sent to {selectedOpp.organization}.
-                                            </div>
-                                        </div>
-                                    </div>
-                                ) : userLevel < selectedOpp.min_level_required ? (
-                                    <div className="p-5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono flex items-center gap-3">
-                                        <AlertTriangle className="h-6 w-6 text-amber-400 shrink-0" />
-                                        <div>
-                                            <div className="font-bold text-white text-sm">CADET LEVEL REQUIREMENT UNMET</div>
-                                            <div className="text-xs text-gray-300">
-                                                Requires Level {selectedOpp.min_level_required}+. Your current status is Level {userLevel}. Complete more lessons to level up!
+                                                Your research profile and credentials were sent to {selectedOpp.organization}.
                                             </div>
                                         </div>
                                     </div>
@@ -327,10 +311,10 @@ export default function OpportunitiesPage() {
                                         <div className="flex items-center justify-between">
                                             <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
                                                 <Send className="h-4 w-4 text-neon-green" />
-                                                EASY APPLY WITH CADET PROFILE
+                                                APPLY WITH RESEARCH PROFILE
                                             </h3>
                                             <span className="text-[10px] font-mono text-neon-green bg-neon-green/10 px-2 py-0.5 rounded border border-neon-green/20">
-                                                VERIFIED CADET LEVEL {userLevel}
+                                                {completedLessons} LESSONS COMPLETED
                                             </span>
                                         </div>
 

@@ -31,8 +31,9 @@ const config: Config = {
         "nagad-orange": "#F26522",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "Inter", "system-ui", "sans-serif"],
+        sans: ["'Volt Bangla'", "'Volte Bangla'", "'Hind Siliguri'", "'Noto Sans Bengali'", "var(--font-geist-sans)", "Inter", "system-ui", "sans-serif"],
         mono: ["var(--font-geist-mono)", "JetBrains Mono", "monospace"],
+        bangla: ["'Volt Bangla'", "'Volte Bangla'", "'Hind Siliguri'", "'Noto Sans Bengali'", "system-ui", "sans-serif"],
       },
       spacing: {
         "18": "4.5rem",
